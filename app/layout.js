@@ -1,7 +1,7 @@
 import './globals.css';
 
 import Sidebar from "./components/layout/sidebar";
-import { DarkModeContextProvider } from './components/context/darkModeContext';
+import { DarkModeContextProvider } from './context/darkModeContext';
 
 
 
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
 
         <DarkModeContextProvider>
 
-          <div className="flex">
+          <div className="grid grid-cols-[1fr] lg:grid-cols-[103px,1fr]">
 
             <Sidebar />
 

@@ -2,4 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: league-spartan-bold;
+    src: url('../public/assets/fonts/LeagueSpartan-Bold.ttf');
+}
+
+@font-face {
+    font-family: league-spartan-medium;
+    src: url('../public/assets/fonts/LeagueSpartan-Medium.ttf');
+}
+
+.heading-l{
+    font-family: league-spartan-bold;
+    font-size: 2.2rem;
+    line-height: 33px;
+    letter-spacing: -1px;
+}
+
+.heading-m {
+    font-family: league-spartan-bold;
+    font-size: 1.5rem;
+    line-height: 22px;
+    letter-spacing: -0.75px;
+}
+
+.heading-s-var{
+    font-family: league-spartan-bold;
+    font-size: 0.93rem;
+    line-height: 24px;
+    letter-spacing: -0.25px;
+
+}
+
+body{
+    font-family: league-spartan-medium;
+    font-size: 0.81rem;
+    line-height: 18px;
+    letter-spacing: -0.1px;
+}
+
 

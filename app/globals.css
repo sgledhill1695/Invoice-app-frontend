@@ -12,6 +12,10 @@
     src: url('../public/assets/fonts/LeagueSpartan-Medium.ttf');
 }
 
+.ls-bold{
+    font-family: league-spartan-bold;
+}
+
 .heading-l{
     font-family: league-spartan-bold;
     font-size: 2.2rem;

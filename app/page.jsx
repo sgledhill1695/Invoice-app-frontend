@@ -1,19 +1,24 @@
 "use client"
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import MainWrapper from "./components/mainWrapper";
 import MainHeader from "./components/mainHeader";
 import NoInvoicesSVG from "./components/noInvoicesSVG";
 import Invoice from "./components/index/invoice";
 import Link from "next/link";
+import CreateInvoice from "./createInvoice";
 
-export default function Index() {
+export default function Page() {
 
-    const {darkModeActive} = useContext(DarkModeContext);
+	//Context
+	const { darkModeActive } = useContext(DarkModeContext);
 
-	//Test invoices
-    const [invoices, setInvoices] = useState([
-		{ 
+	//States
+	const [openCreateInvoice, setOpenCreateInvoice] = useState(false);
+
+    //Test data
+	const [invoices, setInvoices] = useState([
+		{
 			id: 'RT3080',
 			dueDate: '19 Jan 2024',
 			name: 'Jensen Huang',
@@ -39,18 +44,22 @@ export default function Index() {
 	]);
 
   return (
+	<>
 
     	<MainWrapper>
 
-    	    <MainHeader/>
+    	    <MainHeader
+				setOpenCreateInvoice={setOpenCreateInvoice}
+			/>
+
 
     	    {invoices.length > 0 ? (
 
-    	      	<section className="mt-[36px] sm:mt-[64px] flex flex-col gap-[16px]">
+    	      	<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
 
-					{invoices.map(invoice => (
+					{invoices.map((invoice, index) => (
 
-                        <Link key={invoice.id} href={'/'}>
+                        <Link key={index} href={`view/${invoice._id}`}>
 							<Invoice
 								invoice={invoice}
 							/>
@@ -74,7 +83,12 @@ export default function Index() {
     	      	</section>
     	    )}
 
+
     	</MainWrapper>
 
+		<CreateInvoice
+			openCreateInvoice={openCreateInvoice}
+		/>
+	</>
   )
 }

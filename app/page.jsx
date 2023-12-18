@@ -15,33 +15,43 @@ export default function Page() {
 
 	//States
 	const [openCreateInvoice, setOpenCreateInvoice] = useState(false);
-
-    //Test data
-	const [invoices, setInvoices] = useState([
-		{
-			id: 'RT3080',
-			dueDate: '19 Jan 2024',
-			name: 'Jensen Huang',
-			date: '1,800.90',
-			status: 'paid'
-		},
-		{
-			id: 'XM9141',
-			dueDate: '20 Sep 2024',
-			name: 'Jensen Huang',
-			date: '1,800.90',
-			status: 'pending'
-		},
-		{
-			id: 'RG0314',
-			dueDate: '12 Mar 2024',
-			name: 'John Morrison',
-			date: '14,002.33',
-			status: 'draft'
-		}
+	const [invoices, setInvoices] = useState([]);
 
 
-	]);
+	//Fetch all the invoices from db
+	useEffect(() => {
+
+		const fetchInvoices = async () => {
+
+			try {
+
+				const res = await fetch('/api/invoices');
+				const retrievedInvoices = await res.json();
+
+				console.log(retrievedInvoices)
+
+				setInvoices(retrievedInvoices.data);
+
+
+			} catch(err) {
+
+			alert('error fetching');
+			
+			}
+		};
+
+		fetchInvoices();
+
+	}, []);
+
+
+    //Open create invoice sidebar
+	const handleOpenCreateInvoice = () => {
+
+		document.body.classList.add('overflow-hidden');
+		setOpenCreateInvoice(true);
+
+	};
 
   return (
 	<>
@@ -49,7 +59,7 @@ export default function Page() {
     	<MainWrapper>
 
     	    <MainHeader
-				setOpenCreateInvoice={setOpenCreateInvoice}
+				handleOpenCreateInvoice={handleOpenCreateInvoice}
 			/>
 
 
@@ -88,6 +98,7 @@ export default function Page() {
 
 		<CreateInvoice
 			openCreateInvoice={openCreateInvoice}
+			setOpenCreateInvoice={setOpenCreateInvoice}
 		/>
 	</>
   )

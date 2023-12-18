@@ -30,13 +30,21 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
     //Handle form submission save and send
     const onSaveAndSend = async (data) => {
 
+        //calulate invoice total
+        let total = 0
+        data.itemList.map(item => {
+            const itemTotal = parseInt(item.total)
+            total = total + itemTotal;
+        });
+
+
         const dataToPost = {
             status: 'pending',
             billFromStreet_address: data.streetAddress,
             billFromCity: data.city,
             billFromPostCode: data.postCode,
             billFromCountry: data.country,
-            billToName: data.clientName,
+            billToName: data.clientsName,
             billToEmail: data.clientEmail,
             billToStreetAddress: data.clientAddress,
             billToCity: data.clientCity,
@@ -45,6 +53,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             invoiceDate: data.invoiceDate,
             paymentTerms: data.paymentTerms,
             productDescription: data.productDescription,
+            total: total
         };
 
         try {
@@ -86,13 +95,22 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
     //Handle form submission for save as draft
     const onSaveAsDraft= async (data) => {
 
+        //calulate invoice total
+        let total = 0
+        data.itemList.map(item => {
+            const itemTotal = parseInt(item.total)
+            total = total + itemTotal;
+        });
+
+        
+
         const dataToPost = {
             status: 'draft',
             billFromStreet_address: data.streetAddress,
             billFromCity: data.city,
             billFromPostCode: data.postCode,
             billFromCountry: data.country,
-            billToName: data.clientName,
+            billToName: data.clientsName,
             billToEmail: data.clientEmail,
             billToStreetAddress: data.clientAddress,
             billToCity: data.clientCity,
@@ -101,6 +119,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             invoiceDate: data.invoiceDate,
             paymentTerms: data.paymentTerms,
             productDescription: data.productDescription,
+            total: total 
         }
 
 

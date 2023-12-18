@@ -1,10 +1,11 @@
 import currency from "currency.js";
+import { useInView } from 'react-intersection-observer';
 import { DarkModeContext } from "./context/darkModeContext";
 import { useContext, useState, useEffect } from "react";
 import { useForm, useFieldArray, watch } from 'react-hook-form';
 
 
-export default function CreateInvoice({openCreateInvoice}){
+export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice}){
 
     //Format currency to pounds
     const POUND = value => currency(value, { symbol: '', decimal: '.', separator: ',', precision: 0 });
@@ -13,7 +14,7 @@ export default function CreateInvoice({openCreateInvoice}){
     const { darkModeActive } = useContext(DarkModeContext);
 
     //Form validation - react hook form
-    const { register, handleSubmit, watch, getValues, formState: {errors}, control, formState: {isDirty, dirtyFields, touchedFields}} = useForm({
+    const { register, handleSubmit, getValues, reset, formState: {errors}, control} = useForm({
         defaultValues: {
             streetAddress: '',
             itemList: [{itemName: '', quantity: 0, price: 0, total: 0 }]
@@ -26,12 +27,110 @@ export default function CreateInvoice({openCreateInvoice}){
         control
     })    
     
-    //Handle form submission
-    const onSubmit = (data) => {
+    //Handle form submission save and send
+    const onSaveAndSend = async (data) => {
 
-        alert('submited');
-        console.log(data);
+        const dataToPost = {
+            status: 'pending',
+            billFromStreet_address: data.streetAddress,
+            billFromCity: data.city,
+            billFromPostCode: data.postCode,
+            billFromCountry: data.country,
+            billToName: data.clientName,
+            billToEmail: data.clientEmail,
+            billToStreetAddress: data.clientAddress,
+            billToCity: data.clientCity,
+            billToPostcode: data.clientPostCode,
+            billToCountry: data.clientCountry,
+            invoiceDate: data.invoiceDate,
+            paymentTerms: data.paymentTerms,
+            productDescription: data.productDescription,
+        };
+
+        try {
+
+            const resp = await fetch(`http://localhost:5000/invoices`, {
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToPost)
+
+            });
+
+            if(resp.status === 201){
+
+                const responseData = await resp.json();
+                reset();
+                setOpenCreateInvoice(false)
+                
+
+            } else {
+
+                alert('fail');
+
+            }
+
+        } catch(err){
+
+            alert('there was an error');
+
+            console.log(err)
+
+        }
+
+
     };
+
+    //Handle form submission for save as draft
+    const onSaveAsDraft= async (data) => {
+
+        const dataToPost = {
+            status: 'draft',
+            billFromStreet_address: data.streetAddress,
+            billFromCity: data.city,
+            billFromPostCode: data.postCode,
+            billFromCountry: data.country,
+            billToName: data.clientName,
+            billToEmail: data.clientEmail,
+            billToStreetAddress: data.clientAddress,
+            billToCity: data.clientCity,
+            billToPostcode: data.clientPostCode,
+            billToCountry: data.clientCountry,
+            invoiceDate: data.invoiceDate,
+            paymentTerms: data.paymentTerms,
+            productDescription: data.productDescription,
+        }
+
+
+
+        try {
+
+            const resp = await fetch(`http://localhost:5000/invoices`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToPost)
+
+            });
+
+            reset();
+            setOpenCreateInvoice(false);
+
+        } catch (err) {
+
+            alert('there was an error');
+
+            console.log(data)
+
+
+        }
+
+
+    };
+
 
 
 
@@ -80,6 +179,21 @@ export default function CreateInvoice({openCreateInvoice}){
 
     };
 
+    //When discard, reset form state and also close the slide in
+    const handleDiscard = () => {
+
+        reset();
+        setOpenCreateInvoice(false);
+        document.body.classList.remove('overflow-hidden');
+
+    };
+
+    //Intersection observer options
+    const options = {
+        rootMargin: '0px',
+        threshold: 0,
+    };
+    const { ref, inView, entry } = useInView(options);
 
     return(
 
@@ -87,14 +201,14 @@ export default function CreateInvoice({openCreateInvoice}){
 
                 <div className={`${openCreateInvoice ? 'open-side-panel-bg' : 'close-side-panel-bg' } min-h-[100%] min-w-[100%] bg-[#0000008a] fixed top-0 left-0 z-10`}>
 
-                    <div className={`${openCreateInvoice ? 'open-side-panel' : 'close-side-panel'} ${darkModeActive ? 'bg-brand-twelve' : 'bg-[white]'}  relative h-[100vh] rounded-tr-[20px] rounded-br-[20px] pt-[60px] ps-[5%] sm:ps-[56px] lg:ps-[155px] pe-[5%] sm:pe-[32px] sm:mt-[80px] sm:mb-[80px] lg:mt-[0px] lg:mb-[0px]`}>
+                    <div className={`${openCreateInvoice ? 'open-side-panel' : 'close-side-panel'} ${darkModeActive ? 'bg-brand-twelve' : 'bg-[white]'}  relative h-[100vh] sm:rounded-tr-[20px] sm:rounded-br-[20px] pt-[60px] ps-[5%] sm:ps-[56px] lg:ps-[155px] pe-[5%] sm:pe-[32px] sm:mt-[80px] sm:mb-[80px] lg:mt-[0px] lg:mb-[0px]`}>
 
                         <div className="overflow-y-scroll h-[100%] pe-[16px]">
 
                             <h5 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>New Invoice</h5>
 
 
-                            <form onSubmit={handleSubmit(onSubmit)} className="ps-[5px]">
+                            <form className="ps-[5px]">
 
                                 {/* Bill from */}
                                 <h6 className={`text-brand-one heading-s-var  mt-[46px]`}>Bill From</h6>
@@ -631,6 +745,27 @@ export default function CreateInvoice({openCreateInvoice}){
 
                                 </ul>
 
+                            {/* Floating submit buttons */}
+                            <div className={`${inView ? 'hidden' : ''} ${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} ${openCreateInvoice ? 'open-side-panel' : 'close-side-panel'}  fixed bottom-0 left-0 right-0 h-[110px] w-[100%] max-w-[790px] py-[30px] floating-submit flex gap-[10px] justify-between ps-[24px] sm:ps-[55px] lg:ps-[155px] pe-[24px] sm:pe-[55px]`}>
+
+                                <button onClick={handleDiscard} type="button" className="w-[80px] sm:w-[96px] bg-[#F9FAFE] rounded-[24px] text-brand-seven ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px] ">
+                                    Discard
+                                </button>
+
+                                <div className="flex gap-[8px]">
+
+                                    <button type="button" onClick={handleSubmit(onSaveAsDraft)} className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'} w-[105px] sm:w-[134px] bg-[#373B53] hover:bg-[#0C0E16] rounded-[24px]  ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]`}>
+                                        Save as Draft
+                                    </button>
+
+                                    <button type="button" onClick={handleSubmit(onSaveAndSend)} className="w-[105px] sm:w-[134px] bg-brand-one hover:bg-brand-two rounded-[24px] text-[white] ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]">
+                                        Save & Send
+                                    </button>
+
+                                </div>
+                            </div>
+
+
 
                                 {/* Add new item */}
                                 <button type="button" onClick={() => append({  itemName: '', quantity: 0, price: 0, total: 0 } )} className={`${darkModeActive ? 'bg-brand-four text-brand-five' : 'bg-[#F9FAFE] text-brand-seven hover:bg-brand-five'} w-[100%]   rounded-[24px]  ls-bold text-[0.93rem] mt-[18px] py-[16.5px] tracking-[-0.25px]`}>
@@ -642,21 +777,22 @@ export default function CreateInvoice({openCreateInvoice}){
                                 )}
 
                                 {/* Discard/ Submit */}
-                                <div className="mt-[39px] flex justify-between sm:pb-[130px] lg:pb-[62px]">
+                                <div ref={ref} className={`${!openCreateInvoice && 'hidden'} mt-[39px] flex justify-between flex-wrap sm:pb-[130px] lg:pb-[62px]`}>
 
-                                    <button type="button" className="w-[96px] bg-[#F9FAFE] rounded-[24px] text-brand-seven ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px] ">
+                                    <button onClick={handleDiscard} type="button" className="w-[80px] sm:w-[96px] bg-[#F9FAFE] rounded-[24px] text-brand-seven ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px] ">
                                         Discard
                                     </button>
 
                                     <div className="flex gap-[8px]">
 
-                                        <button type="button"  className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'} w-[134px] bg-[#373B53] rounded-[24px]  ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]`}>
+                                        <button type="button" onClick={handleSubmit(onSaveAsDraft)} className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'} w-[105px] sm:w-[134px] bg-[#373B53] hover:bg-[#0C0E16] rounded-[24px]  ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]`}>
                                             Save as Draft
                                         </button>
 
-                                        <button type="button"  className="w-[134px] bg-brand-one rounded-[24px] text-[white] ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]">
+                                        <button type="button" onClick={handleSubmit(onSaveAndSend)} className="w-[105px] sm:w-[134px] bg-brand-one hover:bg-brand-two rounded-[24px] text-[white] ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px]">
                                             Save & Send
                                         </button>
+                                    
                                     </div>
 
                                 </div>
@@ -664,6 +800,8 @@ export default function CreateInvoice({openCreateInvoice}){
                             </form>
 
                         </div>
+
+
 
                     </div>
 

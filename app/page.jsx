@@ -28,8 +28,6 @@ export default function Page() {
 				const res = await fetch('/api/invoices');
 				const retrievedInvoices = await res.json();
 
-				console.log(retrievedInvoices)
-
 				setInvoices(retrievedInvoices.data);
 
 
@@ -60,6 +58,7 @@ export default function Page() {
 
     	    <MainHeader
 				handleOpenCreateInvoice={handleOpenCreateInvoice}
+				invoices={invoices}
 			/>
 
 

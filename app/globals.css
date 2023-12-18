@@ -12,8 +12,17 @@
     src: url('../public/assets/fonts/LeagueSpartan-Medium.ttf');
 }
 
+@font-face {
+    font-family: league-spartan-semiBold;
+    src: url('../public/assets/fonts/LeagueSpartan-SemiBold.ttf');
+}
+
 .ls-bold{
     font-family: league-spartan-bold;
+}
+
+.ls-semibold{
+    font-family: league-spartan-semiBold;
 }
 
 .heading-l{
@@ -45,4 +54,32 @@ body{
     letter-spacing: -0.1px;
 }
 
+.close-side-panel-bg{
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease-out, visibility 0s 0.6s
+}
 
+.open-side-panel-bg {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s, background-color 0.2s linear
+}
+
+.close-side-panel{
+    max-width: 0px;
+    transition: max-width 0.3s ease-in-out;
+    overflow-x: hidden;
+}
+
+.open-side-panel{
+    max-width: 790px;
+    transition: max-width 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.floating-submit{
+    -webkit-box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
+    -moz-box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
+    box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
+}

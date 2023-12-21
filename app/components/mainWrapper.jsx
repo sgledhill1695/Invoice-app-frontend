@@ -7,7 +7,7 @@ export default function MainWrapper({children}){
 
     return(
 
-        <main className={`${darkModeActive ? 'bg-[#141625]' : 'bg-[#F8F8FB]'} h-[100vh]`}>
+        <main className={`${darkModeActive ? 'bg-[#141625]' : 'bg-[#F8F8FB]'} min-h-[100vh]`}>
             <div className="lg:w-[730px] mt-[36px] sm:mt-[62px] lg:mt-[70px] mx-[3%] sm:mx-[5%] lg:m-auto">
 
                 {children}

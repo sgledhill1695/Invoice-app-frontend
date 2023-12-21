@@ -25,7 +25,7 @@ export default function Page() {
 
 			try {
 
-				const res = await fetch('/api/invoices');
+				const res = await fetch('/api/invoices/index');
 				const retrievedInvoices = await res.json();
 
 				setInvoices(retrievedInvoices.data);
@@ -68,7 +68,7 @@ export default function Page() {
 
 					{invoices.map((invoice, index) => (
 
-                        <Link key={index} href={`view/${invoice._id}`}>
+                        <Link key={index} href={`/view/${invoice._id}`}>
 							<Invoice
 								invoice={invoice}
 							/>

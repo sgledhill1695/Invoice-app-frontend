@@ -30,6 +30,8 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
     //Handle form submission save and send
     const onSaveAndSend = async (data) => {
 
+        console.log(data)
+
         //calulate invoice total
         let total = 0
         data.itemList.map(item => {
@@ -37,6 +39,16 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             total = total + itemTotal;
         });
 
+        //Add item lists to data
+        const items = []
+        for(let i = 0; i < data.itemList.length; i++){
+            items.push(data?.[`itemList${i}`]);
+        };
+
+        //Calc line totals
+        items.forEach(item => {
+            item.total = item.quantity * item.price
+        });
 
         const dataToPost = {
             status: 'pending',
@@ -45,14 +57,15 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             billFromPostCode: data.postCode,
             billFromCountry: data.country,
             billToName: data.clientsName,
-            billToEmail: data.clientEmail,
-            billToStreetAddress: data.clientAddress,
+            billToEmail: data.clientsEmail,
+            billToStreetAddress: data.clientStreet,
             billToCity: data.clientCity,
             billToPostcode: data.clientPostCode,
             billToCountry: data.clientCountry,
             invoiceDate: data.invoiceDate,
             paymentTerms: data.paymentTerms,
             productDescription: data.productDescription,
+            itemList: items,
             total: total
         };
 
@@ -102,7 +115,17 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             total = total + itemTotal;
         });
 
-        
+        //Add item lists to data
+        const items = []
+        for (let i = 0; i < data.itemList.length; i++) {
+            items.push(data?.[`itemList${i}`]);
+        };
+
+        //Calc line totals
+        items.forEach(item => {
+            item.total = item.quantity * item.price
+        });
+
 
         const dataToPost = {
             status: 'draft',
@@ -112,15 +135,18 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
             billFromCountry: data.country,
             billToName: data.clientsName,
             billToEmail: data.clientEmail,
-            billToStreetAddress: data.clientAddress,
+            billToStreetAddress: data.clientStreet,
             billToCity: data.clientCity,
             billToPostcode: data.clientPostCode,
             billToCountry: data.clientCountry,
             invoiceDate: data.invoiceDate,
             paymentTerms: data.paymentTerms,
             productDescription: data.productDescription,
+            itemList: items,
             total: total 
         }
+
+        
 
 
 
@@ -150,9 +176,6 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
 
     };
 
-
-
-
     //FORM CSS CONTROL
     //form labels
     let labelColor = "text-brand-seven";
@@ -172,14 +195,20 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
 
         const currentValues = getValues();
         const current = currentValues.itemList[index];
+
         let total = quantity * current.price
-        
+       // console.log(currentValues)
+        console.log(current)
         if(!total){
             total = 0;
         } else {
             total = POUND(total).format();
         }
-        update(index, {quantity: quantity, price: current.price, total: total} )
+        update(index, {
+            quantity: quantity, 
+            price: current.price, 
+            total: total
+        })
 
     };
 
@@ -194,7 +223,11 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice})
         } else {
             total = POUND(total).format();
         }
-        update(index, { quantity: current.quantity, price: price, total: total })
+        update(index, { 
+            quantity: current.quantity, 
+            price: price, 
+            total: total 
+        })
 
     };
 

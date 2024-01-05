@@ -39,12 +39,12 @@
     letter-spacing: -0.75px;
 }
 
+
 .heading-s-var{
     font-family: league-spartan-bold;
     font-size: 0.93rem;
     line-height: 24px;
     letter-spacing: -0.25px;
-
 }
 
 body{
@@ -78,8 +78,3 @@ body{
     overflow: hidden;
 }
 
-.floating-submit{
-    -webkit-box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
-    -moz-box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
-    box-shadow: 0px -69px 32px 0px rgba(0, 0, 0, 0.03);
-}

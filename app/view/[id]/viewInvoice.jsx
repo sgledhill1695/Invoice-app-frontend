@@ -1,4 +1,4 @@
-export default function ViewInvoice({invoice, darkModeActive}){
+export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal, onDelete}){
 
     console.log(invoice)
 
@@ -20,7 +20,8 @@ export default function ViewInvoice({invoice, darkModeActive}){
 
 
     return(
-        <section className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'} py-[50px] px-[48px] mt-[24px] mb-[24px] rounded-[8px]`}>
+        <section className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'} py-[24px] sm:py-[50px] px-[24px] sm:px-[48px] mt-[24px] mb-[100px] sm:mb-[24px] rounded-[8px]`}>
+            
             
             {/* MAIN CONTAINER */}
             <div className="grid grid-cols-4">
@@ -151,6 +152,25 @@ export default function ViewInvoice({invoice, darkModeActive}){
                 <p className="text-[white]">Amount Due</p>
                 <p className="text-[white] heading-m">£ {invoice?.total}</p>
             </div>
+
+            {/* Floating submit buttons */}
+            <div className={`${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} sm:hidden fixed bottom-0 left-0 right-0 h-[110px] w-[100%] py-[30px] floating-submit flex gap-[10px] justify-between ps-[24px] sm:ps-[55px] lg:ps-[155px] pe-[24px] sm:pe-[55px]`}>
+
+                <div className="flex justify-between items-center gap-[8px] w-[100%]">
+
+                    <button className={`${darkModeActive ? 'bg-brand-eight text-brand-five hover:bg-[white] hover:text-brand-seven' : 'bg-[#F9FAFE] text-brand-seven hover:bg-brand-five '} px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Edit</button>
+
+                    <div className="flex gap-[5px]">
+                        <button onClick={handleDeleteModal} className={`bg-[#EC5757] text-[white] hover:bg-[#FF9797] px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Delete</button>
+                        <button onClick={handleDeleteModal} className={`bg-[#7C5DFA] hover:bg-brand-two text-[white] px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Mark as paid </button>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
 
     </section>
 

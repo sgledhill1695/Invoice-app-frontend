@@ -1,12 +1,16 @@
 "use client"
+
 import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
+
 import MainWrapper from "./components/mainWrapper";
 import MainHeader from "./components/mainHeader";
 import NoInvoicesSVG from "./components/noInvoicesSVG";
 import Invoice from "./components/index/invoice";
 import Link from "next/link";
 import CreateInvoice from "./createInvoice";
+import SuccessNotification from "./components/lib/successNotification";
+import ErrorNotification from "./components/lib/errorNotification";
 
 export default function Page() {
 
@@ -54,7 +58,7 @@ export default function Page() {
   return (
 	<>
 
-    	<MainWrapper>
+    	<MainWrapper>			
 
     	    <MainHeader
 				handleOpenCreateInvoice={handleOpenCreateInvoice}
@@ -93,6 +97,10 @@ export default function Page() {
     	    )}
 
 
+
+			<SuccessNotification/>
+			<ErrorNotification/>
+			
     	</MainWrapper>
 
 		<CreateInvoice

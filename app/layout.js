@@ -2,8 +2,7 @@ import './globals.css';
 
 import Sidebar from "./components/layout/sidebar";
 import { DarkModeContextProvider } from './context/darkModeContext';
-
-
+import { NotificationContextProvider } from './context/notificationContext';
 
 export const metadata = {
   title: 'Invoice App',
@@ -15,15 +14,17 @@ export default function RootLayout({ children }) {
       <body>
 
         <DarkModeContextProvider>
+          <NotificationContextProvider>
 
-          <div className="grid grid-cols-[1fr] lg:grid-cols-[103px,1fr]">
+            <div className="grid grid-cols-[1fr] lg:grid-cols-[103px,1fr]">
 
-            <Sidebar />
+              <Sidebar />
 
-            {children}
+              {children}
 
-          </div>
+            </div>
 
+          </NotificationContextProvider>
         </DarkModeContextProvider>
 
       </body>

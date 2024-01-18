@@ -12,6 +12,7 @@ import ViewInvoice from "./viewInvoice";
 import DeleteModal from "@/app/deleteModal";
 import SuccessNotification from "@/app/components/lib/successNotification";
 import ErrorNotification from "@/app/components/lib/errorNotification";
+import EditInvoice from "./editInvoice";
 
 export default function Page({params}){
 
@@ -23,8 +24,11 @@ export default function Page({params}){
 
 
     //State
+    const [reRender, setReRender] = useState(false); //State to force component to rerender and make an api call
     const [invoice, setInvoice] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
+    const [openEditInvoice, setOpenEditInvoice] = useState(false);
+
 
     //Router
     const router = useRouter();
@@ -53,7 +57,9 @@ export default function Page({params}){
         }
         fetchInvoice();
 
-    },[]);
+        setReRender(false);
+
+    },[reRender]);
 
     const handleOpenEdit = () => { 
         alert('open edit');
@@ -116,9 +122,11 @@ export default function Page({params}){
                 });
 
                 return;
+
             } else if(res.status === 200) {
 
-                const data = await res.json();
+                setReRender(true);
+
             }
 
         } catch(err) {
@@ -131,7 +139,7 @@ export default function Page({params}){
         }
 
     
-    }
+    };
 
 
     return(
@@ -145,6 +153,7 @@ export default function Page({params}){
                     darkModeActive={darkModeActive}
                     handleDeleteModal={handleDeleteModal}
                     onMarkAsPaid={onMarkAsPaid}
+                    setOpenEditInvoice={setOpenEditInvoice}
                 />
 
                 <ViewInvoice
@@ -160,6 +169,16 @@ export default function Page({params}){
                     invoice={invoice}
                     darkModeActive={darkModeActive}
                     onDelete={onDelete}
+                />
+
+                <EditInvoice
+                    openEditInvoice={openEditInvoice}
+                    setOpenEditInvoice={setOpenEditInvoice}
+                    invoice={invoice}
+                    params={params}
+                    setReRender={setReRender}
+                    setShowSuccess={setShowSuccess}
+                    setShowError={setShowError}
                 />
 
                 <SuccessNotification/>

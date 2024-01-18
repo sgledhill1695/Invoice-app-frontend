@@ -15,7 +15,7 @@ export default function Invoice ({invoice}){
 
 
     return(
-        <div className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'}  shadow-md py-[27px] px-[24px] flex items-center justify-between rounded-[8px] hover:cursor-pointer hover:border-[1px] hover:border-brand-one gap-x-[100px] sm:gap-x-0 gap-y-[24px] sm:gap-y-0 flex-wrap`}>
+        <div className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'}  shadow-md py-[27px] px-[24px] flex items-center justify-between rounded-[8px] hover:cursor-pointer hover:outline hover:outline-1 hover:outline-brand-one gap-x-[100px] sm:gap-x-0 gap-y-[24px] sm:gap-y-0 flex-wrap`}>
 
             <h4 className="text-brand-seven heading-s-var order-1 sm:order-1">
                 #

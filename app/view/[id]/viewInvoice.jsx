@@ -1,6 +1,6 @@
 export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal, onDelete}){
 
-    console.log(invoice)
+    console.log(invoice);
 
     //CSS
     let invoiceHeader = 'text-brand-seven'
@@ -59,7 +59,7 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                             <div className="col-span-1">
                                 <div className="flex flex-col gap-[7px]">
                                     <h3 className={`${invoiceHeader}`}>Bill To</h3>
-                                    <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToName}</p>
+                                    <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToEmail}</p>
 
                                     <div className={`${invoiceHeader} flex flex-col gap-[4px]`}>
 
@@ -75,7 +75,7 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                             <div className="col-span-1">
                                 <div className="flex flex-col gap-[7px]">
                                     <h3 className={invoiceHeader}>Sent To</h3>
-                                    <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToEmail}</p>
+                                    <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToName}</p>
                                 </div>
                             </div>
 
@@ -97,21 +97,13 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
             </div>
 
 
-
-
-
-
-
-
-
-
             <div className={`${darkModeActive ? 'bg-brand-four' : 'bg-[#F9FAFE]'} py-[33px] px-[32px] items-center grid grid-cols-2 sm:grid-cols-5 mt-[44px] pb-[50px] rounded-tr-[8px] rounded-tl-[8px]`}>
 
                 <div className="col-span-1 sm:col-span-2 text-start">
                     <p className={`${invoiceHeader} hidden sm:flex flex-col mb-[33px]`}>Item Name</p>
                     <div className="flex flex-col gap-[24px] sm:gap-[33px]">
-                        {invoice?.itemList?.map(item => (
-                            <div>
+                        {invoice?.itemList?.map((item, index) => (
+                            <div key={index}>
                                 <p className={`${invoiceData} heading-s-var text-start`}>{item.itemName}</p>
                                 <p className={`${darkModeActive ? 'text-brand-six' : 'text-brand-seven'} heading-s-var sm:hidden`}>{`${item.quantity} x £ ${item.price}`}</p>
                             </div>
@@ -122,8 +114,8 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                 <div className="col-span-1 text-center hidden sm:flex sm:flex-col">
                     <p className={`${invoiceHeader} flex flex-col gap-[4px] mb-[33px]`}>QTY.</p>
                     <div className="flex flex-col gap-[33px]">
-                        {invoice?.itemList?.map(item => (
-                            <p className={`${listValues} heading-s-var text-center`}>{item.quantity}</p>
+                        {invoice?.itemList?.map((item, index) => (
+                            <p key={index} className={`${listValues} heading-s-var text-center`}>{item.quantity}</p>
                         ))}
                     </div>
                 </div>
@@ -131,8 +123,8 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                 <div className="col-span-1 text-end hidden sm:flex sm:flex-col">
                     <p className={`${invoiceHeader} flex flex-col gap-[4px] text-end mb-[33px]`}>Price</p>
                     <div className="flex flex-col gap-[33px]">
-                        {invoice?.itemList?.map(item => (
-                            <p className={`${listValues} heading-s-var text-end`}>£ {item.price}</p>
+                        {invoice?.itemList?.map((item, index) => (
+                            <p key={index} className={`${listValues} heading-s-var text-end`}>£ {item.price}</p>
                         ))}
                     </div>
                 </div>
@@ -140,8 +132,8 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                 <div className="col-span-1 text-end">
                     <p className={`${invoiceHeader} hidden sm:flex flex-col gap-[4px] text-end mb-[33px]`}>Total</p>
                     <div className="flex flex-col gap-[33px]">
-                        {invoice?.itemList?.map(item => (
-                            <p className={`${darkModeActive ? 'text-[white]' : 'text-[#0C0E16]'} heading-s-var text-end`}>£ {item.total}</p>
+                        {invoice?.itemList?.map((item, index) => (
+                            <p key={index} className={`${darkModeActive ? 'text-[white]' : 'text-[#0C0E16]'} heading-s-var text-end`}>£ {item.total}</p>
                         ))}
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-export default function ViewHeader({darkModeActive, invoice, handleDeleteModal, onMarkAsPaid}){
+export default function ViewHeader({darkModeActive, invoice, handleDeleteModal, onMarkAsPaid, setOpenEditInvoice}){
 
 
     return(
@@ -66,7 +66,7 @@ export default function ViewHeader({darkModeActive, invoice, handleDeleteModal, 
 
             <div className="hidden sm:flex items-center gap-[8px]">
 
-                <button className={`${darkModeActive ? 'bg-brand-eight text-brand-five hover:bg-[white] hover:text-brand-seven' : 'bg-[#F9FAFE] text-brand-seven hover:bg-brand-five '} px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Edit</button>
+                <button onClick={() => setOpenEditInvoice(true)} className={`${darkModeActive ? 'bg-brand-eight text-brand-five hover:bg-[white] hover:text-brand-seven' : 'bg-[#F9FAFE] text-brand-seven hover:bg-brand-five '} px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Edit</button>
                 <button onClick={handleDeleteModal} className={`bg-[#EC5757] text-[white] hover:bg-[#FF9797] px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Delete</button>
                 <button onClick={() => onMarkAsPaid(invoice._id)} className={`bg-[#7C5DFA] hover:bg-brand-two text-[white] px-[24px] py-[15px] rounded-[24px] heading-s-var`}>Mark as paid </button>
 

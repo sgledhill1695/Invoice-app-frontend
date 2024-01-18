@@ -2,15 +2,17 @@
 
 import { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
+import { SuccessNotificationContext } from "./context/notificationContext";
+import { ErrorNotificationContext } from "./context/notificationContext";
 
 import MainWrapper from "./components/mainWrapper";
 import MainHeader from "./components/mainHeader";
 import NoInvoicesSVG from "./components/noInvoicesSVG";
 import Invoice from "./components/index/invoice";
 import Link from "next/link";
-import CreateInvoice from "./createInvoice";
 import SuccessNotification from "./components/lib/successNotification";
 import ErrorNotification from "./components/lib/errorNotification";
+import CreateInvoice from "./createInvoice";
 
 export default function Page() {
 
@@ -20,6 +22,9 @@ export default function Page() {
 	//States
 	const [openCreateInvoice, setOpenCreateInvoice] = useState(false);
 	const [invoices, setInvoices] = useState([]);
+	const {setShowSuccess} = useContext(SuccessNotificationContext);
+	const {setShowError} = useContext(ErrorNotificationContext);
+	const [reRender, setReRender] = useState(false);
 
 
 	//Fetch all the invoices from db
@@ -44,13 +49,14 @@ export default function Page() {
 
 		fetchInvoices();
 
-	}, []);
+		setReRender(false);
+
+	}, [reRender]);
 
 
     //Open create invoice sidebar
 	const handleOpenCreateInvoice = () => {
 
-		document.body.classList.add('overflow-hidden');
 		setOpenCreateInvoice(true);
 
 	};
@@ -103,10 +109,15 @@ export default function Page() {
 			
     	</MainWrapper>
 
-		<CreateInvoice
+ 		<CreateInvoice
 			openCreateInvoice={openCreateInvoice}
 			setOpenCreateInvoice={setOpenCreateInvoice}
+			setInvoices={setInvoices}
+			setShowSuccess={setShowSuccess}
+			setShowError={setShowError}
+			setReRender={setReRender}
 		/>
+
 	</>
   )
 }

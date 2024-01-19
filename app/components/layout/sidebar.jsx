@@ -10,7 +10,24 @@ export default function Sidebar(){
 
     //Toggle light and dark mode
     const handleToggleMode = () => {
-        darkModeActive ? setDarkModeActive(false) : setDarkModeActive(true);
+
+        if(!darkModeActive){
+
+            setDarkModeActive(true);
+
+            const darkModeActiveLocalStorage = true;
+
+            localStorage.setItem('Dark Mode Active', 'true');
+        
+        } else {
+
+            setDarkModeActive(false);
+
+            localStorage.removeItem("Dark Mode Active")
+        }
+
+
+        //darkModeActive ? setDarkModeActive(false) : setDarkModeActive(true);
     };
 
     
@@ -32,9 +49,11 @@ export default function Sidebar(){
 
                     {darkModeActive ? (
 
-                        <svg onClick={handleToggleMode} className="fill-[#858BB2] hover:fill-[#DFE3FA] hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11">
-                            <path d="M5.81724 0.899658C3.1055 0.899658 0.899414 3.10618 0.899414 5.81792C0.899414 8.52966 3.1055 10.7362 5.81724 10.7362C8.52854 10.7362 10.7351 8.53009 10.7351 5.81792C10.7351 3.10575 8.52854 0.899658 5.81724 0.899658Z"/>
+
+                        <svg onClick={handleToggleMode} className="hover:cursor-pointer fill-[#7E88C3] hover:fill-[#DFE3FA]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
+                            <path d="M280 24V0H232V24 88v24h48V88 24zm157 84.9l17-17L420 58l-17 17-45.3 45.3-17 17 33.9 33.9 17-17L437 108.9zM108.9 75L92 58 58 92l17 17 45.3 45.3 17 17 33.9-33.9-17-17L108.9 75zM24 232H0v48H24 88h24V232H88 24zm400 0H400v48h24 64 24V232H488 424zM154.2 391.8l17-17-33.9-33.9-17 17L75 403.1 58 420 92 454l17-17 45.3-45.3zm237.6-33.9l-17-17-33.9 33.9 17 17L403.1 437l17 17L454 420l-17-17-45.3-45.3zM280 424V400H232v24 64 24h48V488 424zm-24-56a112 112 0 1 0 0-224 112 112 0 1 0 0 224z"/>
                         </svg>
+
 
                         ) : (
 

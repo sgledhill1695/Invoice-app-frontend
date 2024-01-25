@@ -1,7 +1,9 @@
 import { DarkModeContext } from "../context/darkModeContext";
 import { useContext } from "react";
 
-export default function MainHeader({handleOpenCreateInvoice, invoices}){
+import InvoiceFilter from "./lib/invoiceFilter";
+
+export default function MainHeader({handleOpenCreateInvoice, invoices, setInvoices, retrievedInvoices}){
 
     const { darkModeActive } = useContext(DarkModeContext);
 
@@ -18,23 +20,11 @@ export default function MainHeader({handleOpenCreateInvoice, invoices}){
 
                 <div className="flex items-center gap-[40px]">
 
-                    {/* Large screen filter */}
-                    <p className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-s-var items-center gap-[14px] hidden sm:flex hover:cursor-pointer`}>Filter by status
-                        <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
-                                <path d="M1 1L5.2279 5.2279L9.4558 1" stroke="#7C5DFA" strokeWidth="2" />
-                            </svg>
-                        </span>
-                    </p>
-
-                    {/* Small screen filter */}
-                    <p className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-s-var items-center gap-[12px] flex sm:hidden hover:cursor-pointer`}>Filter
-                        <span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="7" viewBox="0 0 10 7" fill="none">
-                                <path d="M1 1L5.2279 5.2279L9.4558 1" stroke="#7C5DFA" strokeWidth="2" />
-                            </svg>
-                        </span>
-                    </p>
+                    <InvoiceFilter
+                        invoices={invoices}
+                        setInvoices={setInvoices}
+                        retrievedInvoices={retrievedInvoices}
+                    />
 
                     {/* Large screen button */}
                     <button onClick={handleOpenCreateInvoice} className="bg-brand-one py-[8px] ps-[8px] pe-[17px] text-[white] gap-[16px] items-center rounded-[24px] grow-0 max-h-[48px] hidden sm:flex hover:bg-brand-two">

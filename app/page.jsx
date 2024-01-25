@@ -22,9 +22,11 @@ export default function Page() {
 	//States
 	const [openCreateInvoice, setOpenCreateInvoice] = useState(false);
 	const [invoices, setInvoices] = useState([]);
+	const [retrievedInvoices, setRetrievedInvoices] = useState([]); //Keep track of invoices fetched from api
 	const {setShowSuccess} = useContext(SuccessNotificationContext);
 	const {setShowError} = useContext(ErrorNotificationContext);
 	const [reRender, setReRender] = useState(false);
+
 
 
 	//Fetch all the invoices from db
@@ -38,6 +40,7 @@ export default function Page() {
 				const retrievedInvoices = await res.json();
 
 				setInvoices(retrievedInvoices.data);
+				setRetrievedInvoices(retrievedInvoices.data);
 
 
 			} catch(err) {
@@ -69,6 +72,8 @@ export default function Page() {
     	    <MainHeader
 				handleOpenCreateInvoice={handleOpenCreateInvoice}
 				invoices={invoices}
+				setInvoices={setInvoices}
+				retrievedInvoices={retrievedInvoices}
 			/>
 
 

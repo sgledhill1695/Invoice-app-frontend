@@ -149,7 +149,7 @@ export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setIn
 
                                             <div className="overflow-y-scroll h-[100%] lg:pe-[16px]">
 
-                                                <h5 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>Edit #{invoice._id?.slice(0, 6)}</h5>
+                                                <h5 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>Edit #{invoice?._id?.slice(0, 6)}</h5>
 
 
                                                 <form className="ps-[5px]">

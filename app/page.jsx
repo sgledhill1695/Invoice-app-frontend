@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect} from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { SuccessNotificationContext } from "./context/notificationContext";
 import { ErrorNotificationContext } from "./context/notificationContext";
@@ -8,11 +8,12 @@ import { ErrorNotificationContext } from "./context/notificationContext";
 import MainWrapper from "./components/mainWrapper";
 import MainHeader from "./components/mainHeader";
 import NoInvoicesSVG from "./components/noInvoicesSVG";
-import Invoice from "./components/index/invoice";
 import Link from "next/link";
 import SuccessNotification from "./components/lib/successNotification";
 import ErrorNotification from "./components/lib/errorNotification";
 import CreateInvoice from "./createInvoice";
+import Invoices from "./components/index/invoices";
+import InvoicesSkeleton from "./components/index/invoicesSkeleton";
 
 export default function Page() {
 
@@ -26,6 +27,7 @@ export default function Page() {
 	const {setShowSuccess} = useContext(SuccessNotificationContext);
 	const {setShowError} = useContext(ErrorNotificationContext);
 	const [reRender, setReRender] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 
 
@@ -41,6 +43,7 @@ export default function Page() {
 
 				setInvoices(retrievedInvoices.data);
 				setRetrievedInvoices(retrievedInvoices.data);
+				setLoading(false);
 
 
 			} catch(err) {
@@ -77,35 +80,47 @@ export default function Page() {
 			/>
 
 
-    	    {invoices.length > 0 ? (
+			{/* If loading display skeleton, when loaded display invoices if any in DB. If none in DB display SVG */}
+			{loading ? (
 
-    	      	<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
+				<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
+					<InvoicesSkeleton loadingInvoices={7} />
+				</section>
 
-					{invoices.map((invoice, index) => (
+			) : (
+				<>
+    	    		{invoices.length > 0 ? (
 
-                        <Link key={index} href={`/view/${invoice._id}`}>
-							<Invoice
-								invoice={invoice}
-							/>
-						</Link>
+    	    		  	<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
 
-					))}
+							{invoices.map((invoice, index) => (
+            		            <Link key={index} href={`/view/${invoice._id}`}>
+									<Invoices
+										invoice={invoice}
+									/>
+								</Link>
+							))}
 
+    	    		  	</section>
 
-    	      	</section>
+    	    		) : (
 
-    	    ) : (
+						<section className="flex flex-col items-center mt-[100px] sm:mt-[130px] lg:mt-[162px] gap-[66px]">
 
-				<section className="flex flex-col items-center mt-[100px] sm:mt-[130px] lg:mt-[162px] gap-[66px]">
-    	      	  	<NoInvoicesSVG/>
-					<div className="flex flex-col items-center gap-[13px]">
-						<h3 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>There is nothing here</h3>
-					  	<p className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'}  max-w-[193px] text-center`}>
-							Create an invoice by clicking the New Invoice button and get started.
-						</p>
-					</div>
-    	      	</section>
-    	    )}
+    	    		  	  	<NoInvoicesSVG/>
+							<div className="flex flex-col items-center gap-[13px]">
+								<h3 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>There is nothing here</h3>
+							  	<p className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'}  max-w-[193px] text-center`}>
+									Create an invoice by clicking the New Invoice button and get started.
+								</p>
+							</div>
+							
+    	    		  	</section>
+    	    		)}
+				</>
+
+			  )}
+
 
 
 

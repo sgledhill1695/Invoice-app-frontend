@@ -12,9 +12,9 @@ export default function InvoicesSkeleton({loadingInvoices}){
     return(
 
         <>
-            {Array(loadingInvoices).fill(0).map(invoice => (
+            {Array(loadingInvoices).fill(0).map((invoice, index) => (
 
-                <div className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'} grid grid-cols-2 sm:grid-cols-6 items-center justify-between shadow-md py-[27px] px-[24px] rounded-[8px]   gap-x-[100px] sm:gap-x-[25px] gap-y-[24px] sm:gap-y-0`}>
+                <div key={index} className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'} grid grid-cols-2 sm:grid-cols-6 items-center justify-between shadow-md py-[27px] px-[24px] rounded-[8px]   gap-x-[100px] sm:gap-x-[25px] gap-y-[24px] sm:gap-y-0`}>
 
                     <h4 className="text-brand-seven heading-s-var order-1 sm:order-1 col-span-1">
                         <Skeleton baseColor={darkModeActive && "#777A92"} />

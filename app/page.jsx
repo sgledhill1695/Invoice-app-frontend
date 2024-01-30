@@ -29,8 +29,7 @@ export default function Page() {
 	const [reRender, setReRender] = useState(false);
 	const [loading, setLoading] = useState(true);
 
-
-
+	
 	//Fetch all the invoices from db
 	useEffect(() => {
 
@@ -41,6 +40,31 @@ export default function Page() {
 				const res = await fetch('/api/invoices/index');
 				const retrievedInvoices = await res.json();
 
+
+				//Calc payment due date and add formatted creation date and due date to object.
+				retrievedInvoices.data.forEach(invoice => {
+
+					const invoiceCreationDate = new Date(invoice.dateCreated);
+					const paymentDueDate = new Date(invoiceCreationDate);
+					paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
+
+					const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					});
+
+					const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					});
+
+					invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
+					invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
+
+				});
+
 				setInvoices(retrievedInvoices.data);
 				setRetrievedInvoices(retrievedInvoices.data);
 				setLoading(false);
@@ -49,6 +73,7 @@ export default function Page() {
 			} catch(err) {
 
 			alert('error fetching');
+			console.log(err)
 			
 			}
 		};

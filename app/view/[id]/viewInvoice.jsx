@@ -1,11 +1,9 @@
 import Skeleton from "react-loading-skeleton";
-import { useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal, onDelete}){
 
-    const [loading, setLoading] = useState(false);
-
+    console.log(invoice)
 
     //CSS
     let invoiceHeader = 'text-brand-seven'
@@ -22,7 +20,6 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
     if (darkModeActive) {
         listValues = 'text-brand-five';
     };
-
 
     return(
         <section className={`${darkModeActive ? 'bg-brand-three' : 'bg-[white]'} py-[24px] sm:py-[50px] px-[24px] sm:px-[48px] mt-[24px] mb-[100px] sm:mb-[24px] rounded-[8px]`}>
@@ -52,11 +49,11 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                             <div className="col-span-1 flex flex-col gap-[31px]">
                                 <div className="flex flex-col gap-[13px]">
                                     <h3 className={invoiceHeader}>Invoice Date</h3>
-                                <p className={`${invoiceData} heading-s-var`}>{invoice?.invoiceDate || <Skeleton baseColor={darkModeActive && "#777A92"} />}</p>
+                                <p className={`${invoiceData} heading-s-var`}>{invoice?.invoiceCreationDateFormatted || <Skeleton baseColor={darkModeActive && "#777A92"} />}</p>
                                 </div>
                                 <div className="flex flex-col gap-[13px]">
                                     <h3 className={invoiceHeader}>Payment Due</h3>
-                                    <p className={`${invoiceData} heading-s-var`}>12 Mar 2023</p>
+                                    <p className={`${invoiceData} heading-s-var`}>{invoice?.invoicePaymentDueDateFormatted || <Skeleton baseColor={darkModeActive && "#777A92"} />}</p>
                                 </div>
 
                             </div>

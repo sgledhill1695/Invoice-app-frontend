@@ -3,6 +3,9 @@ import { DarkModeContext } from "@/app/context/darkModeContext";
 
 export default function Invoices({ invoice }){
 
+    console.log(invoice);
+
+    //Context
     const { darkModeActive } = useContext(DarkModeContext);
 
     //function to format each date
@@ -24,7 +27,7 @@ export default function Invoices({ invoice }){
             </h4>
 
             <p className={`${darkModeActive ? 'text-brand-five' : 'text-brand-six'} order-3 sm:order-2 col-span-1`}>
-                Due {formatDate(invoice.invoiceDate)}
+                Due {invoice.invoicePaymentDueDateFormatted}
             </p>
 
             <p className={`${darkModeActive ? 'text-brand-five' : 'text-brand-six'} order-2 sm:order-3 col-span-1`}>

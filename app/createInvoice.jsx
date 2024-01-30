@@ -98,7 +98,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
                     setInvoices(allInvoices.data)
                     setOpenCreateInvoice(false);
                     setShowSuccess({
-                        display: true,
+                        displayed: true,
                         message: 'Invoice created' 
                     })
                     reset();
@@ -108,7 +108,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
                     setOpenCreateInvoice(false);
                     setShowError({
-                        display: true,
+                        displayed: true,
                         message: 'Unable to create new invoice'
                     })
 
@@ -720,13 +720,13 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
                                                                     type="date"
                                                                     id="paymentTerms"
                                                                     className={`${errors.paymentTerms ? 'outline-[#EC5757]' : ''} ${darkModeActive ? 'bg-brand-three border-brand-four text-[white]' : 'bg-[white]  text-brand-eight border-brand-five'} ${errors.paymentTerms && 'border-[red]'}  focus:border-brand-two custom-select w-[100%] border-[1px] rounded-[4px] h-[48px] outline-none ps-[20px] heading-s-var  hover:cursor-pointer pe-[16px]`}
-                                                                    defaultValue="30 days"
+                                                                    defaultValue="30"
                                                                 >
 
-                                                                    <option value="1 day">Net 1 Day</option>
-                                                                    <option value="7 days">Net 7 Days</option>
-                                                                    <option value="14 days">Net 14 Days</option>
-                                                                    <option value="30 days">Net 30 Days</option>
+                                                                    <option value="1">Net 1 Day</option>
+                                                                    <option value="7">Net 7 Days</option>
+                                                                    <option value="14">Net 14 Days</option>
+                                                                    <option value="30">Net 30 Days</option>
 
                                                                 </select>
                                                             </div>

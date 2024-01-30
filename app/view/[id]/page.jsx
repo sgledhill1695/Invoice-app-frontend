@@ -43,6 +43,28 @@ export default function Page({params}){
                 if(res.status === 200){
 
                     const invoice = await res.json();
+
+                    //Calc payment due date and add formatted creation date and due date to object.
+                    const invoiceCreationDate = new Date(invoice.data.dateCreated);
+                    const paymentDueDate = new Date(invoiceCreationDate);
+                    paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.data.paymentTerms);
+
+                    const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                    });
+
+                    const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                    });
+
+                    invoice.data.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
+                    invoice.data.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
+
+
                     setInvoice(invoice.data);
 
                 } else {
@@ -141,6 +163,7 @@ export default function Page({params}){
 
     
     };
+
 
 
     return(

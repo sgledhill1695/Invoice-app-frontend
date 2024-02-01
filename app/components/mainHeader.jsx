@@ -3,7 +3,7 @@ import { useContext } from "react";
 
 import InvoiceFilter from "./lib/invoiceFilter";
 
-export default function MainHeader({handleOpenCreateInvoice, invoices, setInvoices, retrievedInvoices}){
+export default function MainHeader({handleOpenCreateInvoice, invoices, setInvoices, retrievedInvoices, filters, setFilters}){
 
     const { darkModeActive } = useContext(DarkModeContext);
 
@@ -14,8 +14,8 @@ export default function MainHeader({handleOpenCreateInvoice, invoices, setInvoic
 
                 <div className="flex flex-col">
                     <h1 className={`${darkModeActive ? 'text-[white]' : 'brand-eight'} heading-m sm:heading-l `}>Invoices</h1>
-                    <p className={`${darkModeActive ? 'text-brand-five' : 'text-[#888EB0]'} hidden sm:flex`}>There are {invoices.length} total invoices</p>
-                    <p className={`${darkModeActive ? 'text-brand-five' : 'text-[#888EB0]'} sm:hidden`}>7 invoices</p>
+                    <p className={`${darkModeActive ? 'text-brand-five' : 'text-[#888EB0]'} hidden sm:flex`}>Showing {invoices.length} total invoices</p>
+                    <p className={`${darkModeActive ? 'text-brand-five' : 'text-[#888EB0]'} sm:hidden`}>{invoices.length} invoices</p>
                 </div>
 
                 <div className="flex items-center gap-[40px]">
@@ -24,6 +24,8 @@ export default function MainHeader({handleOpenCreateInvoice, invoices, setInvoic
                         invoices={invoices}
                         setInvoices={setInvoices}
                         retrievedInvoices={retrievedInvoices}
+                        filters={filters}
+                        setFilters={setFilters}
                     />
 
                     {/* Large screen button */}

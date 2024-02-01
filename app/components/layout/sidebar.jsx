@@ -26,8 +26,6 @@ export default function Sidebar(){
             localStorage.removeItem("Dark Mode Active")
         }
 
-
-        //darkModeActive ? setDarkModeActive(false) : setDarkModeActive(true);
     };
 
     
@@ -36,9 +34,11 @@ export default function Sidebar(){
 
             <div className={`${darkModeActive ? 'bg-dark-sidebar' : 'bg-light-sidebar'} relative lg:fixed z-20 flex lg:flex-col w-[100vw] lg:min-h-[280px] lg:w-[103px] h-[80px] lg:h-[100%]  lg:rounded-br-[20px] lg:rounded-tr-[20px] justify-between`}>
 
-                <div className="bg-brand-dark-purple flex justify-center items-center min-w-[80px] lg:min-w-0 lg:h-[103px] rounded-br-[20px] rounded-tr-[20px] ">
+                <div className="bg-brand-dark-purple flex justify-center items-center min-w-[80px] lg:min-w-0 lg:h-[103px] rounded-br-[20px] rounded-tr-[20px] relative">
 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="38" viewBox="0 0 40 38" fill="none">
+                    <div className="bg-[#9277FF] h-[45px] lg:h-[58px] mt-[35px] lg:mt-[44px] w-[100%] relative bottom-0 z-30 rounded-br-[20px] rounded-tl-[20px]"></div>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" className="absolute z-40" width="40" height="38" viewBox="0 0 40 38" fill="none">
                         <path fillRule="evenodd" clipRule="evenodd" d="M10.6942 0.292175L20 18.9999L29.3058 0.292175C35.6645 3.64073 40 10.314 40 17.9999C40 29.0456 31.0457 37.9999 20 37.9999C8.9543 37.9999 0 29.0456 0 17.9999C0 10.314 4.33546 3.64073 10.6942 0.292175Z" fill="white" />
                     </svg> 
 

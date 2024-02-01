@@ -36,11 +36,14 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
     //Handle form submission save and send
     const onSaveAndSend = async (data) => {
 
+
         //calulate invoice total
-        let total = 0
+        let total = 0;
         data.itemList.map(item => {
-            const itemTotal = parseInt(item.total)
-            total = total + itemTotal;
+
+            const itemTotal = currency(item.total);
+            total = total + itemTotal.value;
+
         });
 
         //Add item lists to data
@@ -87,32 +90,13 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
             if (resp.status === 201) {
 
-                const responseData = await resp.json();
-
-                //Fetch all invoices to include new 
-                const fetchAllResp = await fetch('/api/invoices/index');
-
-                if (fetchAllResp.status === 200) {
-
-                    const allInvoices = await fetchAllResp.json();
-                    setInvoices(allInvoices.data)
-                    setOpenCreateInvoice(false);
-                    setShowSuccess({
-                        displayed: true,
-                        message: 'Invoice created' 
-                    })
-                    reset();
-
-
-                } else if (resp.status === 500) {
-
-                    setOpenCreateInvoice(false);
-                    setShowError({
-                        displayed: true,
-                        message: 'Unable to create new invoice'
-                    })
-
-                }
+                setOpenCreateInvoice(false);
+                setShowSuccess({
+                    displayed: true,
+                    message: 'Invoice created'
+                })
+                reset();
+                setReRender(true);
 
             } else {
 
@@ -142,10 +126,12 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
     const onSaveAsDraft = async (data) => {
 
         //calulate invoice total
-        let total = 0
+        let total = 0;
         data.itemList.map(item => {
-            const itemTotal = parseInt(item.total)
-            total = total + itemTotal;
+
+            const itemTotal = currency(item.total);
+            total = total + itemTotal.value;
+
         });
 
         //Add item lists to data

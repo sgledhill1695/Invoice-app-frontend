@@ -3,7 +3,7 @@ import { Popover, Transition } from '@headlessui/react'
 import { DarkModeContext } from '@/app/context/darkModeContext'
 
 
-export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}) {
+export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices, filters, setFilters}) {
 
     const {darkModeActive} = useContext(DarkModeContext);
 
@@ -11,6 +11,7 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
     const [checkedFilters, setCheckedFilters] = useState([])
 
     const handleFilter = (filter) => {
+
 
 
         if(checkedFilters.includes(filter)){
@@ -21,8 +22,10 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
             });
 
             setCheckedFilters(updatedFilters);
+            setFilters(updatedFilters)
 
-            if(updatedFilters.length < 1){
+
+/*             if(updatedFilters.length < 1){
 
                 setInvoices(retrievedInvoices);
 
@@ -36,25 +39,23 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
                 setInvoices(filteredInvoices);
 
             }
-
+ */
 
         } else {
 
-            console.log('not in');
             const activeFilters = [...checkedFilters];
             activeFilters.push(filter);
             setCheckedFilters(activeFilters);
+            setFilters(activeFilters);
 
-            const filteredInvoices = retrievedInvoices.filter(invoice => {
+/*             const filteredInvoices = retrievedInvoices.filter(invoice => {
                 return activeFilters.includes(invoice.status);
             })
 
             setInvoices(filteredInvoices);
-            
+ */            
         }
 
-
-        
     }
 
     return (
@@ -82,7 +83,7 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
 
                             <div className='flex items-center gap-[13px]'>
                                 <input
-                                    onClick={() => handleFilter('draft')}
+                                    onChange={() => handleFilter('draft')}
                                     id="draft-input"
                                     aria-describedby="candidates-description"
                                     name="draft-input"
@@ -95,7 +96,7 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
 
                             <div className='flex items-center gap-[13px]'>
                                 <input
-                                    onClick={() => handleFilter('pending')}
+                                    onChange={() => handleFilter('pending')}
                                     id="candidates"
                                     aria-describedby="candidates-description"
                                     name="candidates"
@@ -109,7 +110,7 @@ export default function InvoiceFilter({invoices, setInvoices, retrievedInvoices}
 
                             <div className='flex items-center gap-[13px]'>
                                 <input
-                                    onClick={() => handleFilter('paid')}
+                                    onChange={() => handleFilter('paid')}
                                     id="candidates"
                                     aria-describedby="candidates-description"
                                     name="candidates"

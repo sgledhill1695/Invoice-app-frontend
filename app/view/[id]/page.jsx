@@ -13,23 +13,22 @@ import DeleteModal from "@/app/deleteModal";
 import SuccessNotification from "@/app/components/lib/successNotification";
 import ErrorNotification from "@/app/components/lib/errorNotification";
 import EditInvoice from "./editInvoice";
+import FetchError from "@/app/components/lib/fetchError";
 
 
 export default function Page({params}){
-
 
     //Context
     const {darkModeActive} = useContext(DarkModeContext);
     const {setShowSuccess} = useContext(SuccessNotificationContext);
     const {setShowError} = useContext(ErrorNotificationContext);
 
-
     //State
     const [reRender, setReRender] = useState(false); //State to force component to rerender and make an api call
     const [invoice, setInvoice] = useState({});
     const [modalOpen, setModalOpen] = useState(false);
     const [openEditInvoice, setOpenEditInvoice] = useState(false);
-
+    const [fetchError, setFetchError] = useState(false);
 
     //Router
     const router = useRouter();
@@ -40,6 +39,7 @@ export default function Page({params}){
         const fetchInvoice = async () => {
             try{
                 const res = await fetch('/api/invoices/view/' + params.id);
+
                 if(res.status === 200){
 
                     const invoice = await res.json();
@@ -69,12 +69,12 @@ export default function Page({params}){
 
                 } else {
 
-                    alert('error');
+                    setFetchError(true);
 
                 }
             } catch(err){
 
-                console.log(err);
+                setFetchError(true);
 
             }
         }
@@ -84,9 +84,6 @@ export default function Page({params}){
 
     },[reRender]);
 
-    const handleOpenEdit = () => { 
-        alert('open edit');
-    };
     
     const handleDeleteModal = (invoice) => {
         setModalOpen(true)
@@ -170,43 +167,58 @@ export default function Page({params}){
         <>
             <MainWrapper>
 
-                <GoBack darkModeActive={darkModeActive} />
+                {fetchError ? (
+                    <>
+                        <FetchError
+                            setFetchError={setFetchError}
+                            darkModeActive={darkModeActive}
+                            setReRender={setReRender}
+                        />
+                    
+                    </>
 
-                <ViewHeader
-                    invoice={invoice}
-                    darkModeActive={darkModeActive}
-                    handleDeleteModal={handleDeleteModal}
-                    onMarkAsPaid={onMarkAsPaid}
-                    setOpenEditInvoice={setOpenEditInvoice}
-                />
+                ) : (
+                    <>
+                        <GoBack darkModeActive = { darkModeActive } />
 
-                <ViewInvoice
-                    darkModeActive={darkModeActive}
-                    invoice={invoice}
-                    handleDeleteModal={handleDeleteModal}
-                    onDelete={onDelete}
-                />
+                        <ViewHeader
+                            invoice={invoice}
+                            darkModeActive={darkModeActive}
+                            handleDeleteModal={handleDeleteModal}
+                            onMarkAsPaid={onMarkAsPaid}
+                            setOpenEditInvoice={setOpenEditInvoice}
+                        />
+        
+                        <ViewInvoice
+                            darkModeActive={darkModeActive}
+                            invoice={invoice}
+                            handleDeleteModal={handleDeleteModal}
+                            onDelete={onDelete}
+                        />
+        
+                        <DeleteModal
+                            modalOpen={modalOpen}
+                            setModalOpen={setModalOpen}
+                            invoice={invoice}
+                            darkModeActive={darkModeActive}
+                            onDelete={onDelete}
+                        />
+        
+                        <EditInvoice
+                            openEditInvoice={openEditInvoice}
+                            setOpenEditInvoice={setOpenEditInvoice}
+                            invoice={invoice}
+                            params={params}
+                            setReRender={setReRender}
+                            setShowSuccess={setShowSuccess}
+                            setShowError={setShowError}
+                        />
+        
+                        <SuccessNotification />
+                        <ErrorNotification />
+                    </>
+                )}
 
-                <DeleteModal
-                    modalOpen={modalOpen}
-                    setModalOpen={setModalOpen}
-                    invoice={invoice}
-                    darkModeActive={darkModeActive}
-                    onDelete={onDelete}
-                />
-
-                <EditInvoice
-                    openEditInvoice={openEditInvoice}
-                    setOpenEditInvoice={setOpenEditInvoice}
-                    invoice={invoice}
-                    params={params}
-                    setReRender={setReRender}
-                    setShowSuccess={setShowSuccess}
-                    setShowError={setShowError}
-                />
-
-                <SuccessNotification/>
-                <ErrorNotification/>
 
             </MainWrapper>   
         </>

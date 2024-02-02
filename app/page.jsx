@@ -92,9 +92,7 @@ export default function Page() {
 
     //Open create invoice sidebar
 	const handleOpenCreateInvoice = () => {
-
 		setOpenCreateInvoice(true);
-
 	};
 
 	//Inifinite Scroll Pagination
@@ -122,6 +120,7 @@ export default function Page() {
 			try {
 
 				if(filters.length > 0){
+
 					const fetchResponse = await fetch(`/api/invoices/index?page=${currentPage}&pageSize=8&filters=${filters.join(',')}`);
 
 					const moreInvoices = await fetchResponse.json();
@@ -156,6 +155,8 @@ export default function Page() {
 					setPaginateLoading(false);
 
 				} else {
+
+
 
 					const fetchResponse = await fetch(`/api/invoices/index?page=${currentPage}&pageSize=8`);
 
@@ -194,10 +195,8 @@ export default function Page() {
 
 			}
 			catch (err) {
-				
-				setLoading(false);
-				setPaginationError(true);
-
+				setPaginateLoading(false);
+				setFetchError(true);
 			}
 		}
 
@@ -260,7 +259,7 @@ export default function Page() {
 			} catch(err){
 
 				setPaginateLoading(false);
-				setFetchError(true);
+				setPaginationError(true);
 
 			}
 		}

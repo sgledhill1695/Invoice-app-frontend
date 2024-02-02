@@ -48,38 +48,49 @@ export default function Page() {
 			try {
 
 				const res = await fetch(`/api/invoices/index?page=1&pageSize=8`);
-				const retrievedInvoices = await res.json();
 
-				console.log(retrievedInvoices);
+				if(res.status === 200){
 
-				//Calc payment due date and add formatted creation date and due date to object.
-				retrievedInvoices.data.invoices.forEach(invoice => {
+					const retrievedInvoices = await res.json();
 
-					const invoiceCreationDate = new Date(invoice.dateCreated);
-					const paymentDueDate = new Date(invoiceCreationDate);
-					paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
+					console.log(retrievedInvoices);
 
-					const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
+					//Calc payment due date and add formatted creation date and due date to object.
+					retrievedInvoices.data.invoices.forEach(invoice => {
+
+						const invoiceCreationDate = new Date(invoice.dateCreated);
+						const paymentDueDate = new Date(invoiceCreationDate);
+						paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
+
+						const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
+							day: 'numeric',
+							month: 'short',
+							year: 'numeric',
+						});
+
+						const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
+							day: 'numeric',
+							month: 'short',
+							year: 'numeric',
+						});
+
+						invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
+						invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
+
 					});
 
-					const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					});
+					setInvoices(retrievedInvoices.data.invoices);
+					setRetrievedInvoices(retrievedInvoices.data.invoices);
+					setTotalPages(retrievedInvoices.data.totalPages)
+					setLoading(false);
 
-					invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-					invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
+				} else {
 
-				});
+					console.log(res);
+					setFetchError(true);
+				}
 
-				setInvoices(retrievedInvoices.data.invoices);
-				setRetrievedInvoices(retrievedInvoices.data.invoices);
-				setTotalPages(retrievedInvoices.data.totalPages)
-				setLoading(false);
+				
 
 			} catch(err) {
 				console.log(err);

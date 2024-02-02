@@ -3,7 +3,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal, onDelete}){
 
-    console.log(invoice)
 
     //CSS
     let invoiceHeader = 'text-brand-seven'

@@ -78,7 +78,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
         try {
 
-            const resp = await fetch(process.env.BACKEND_API + '/invoices', {
+            const resp = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/invoices', {
 
                 method: 'POST',
                 headers: {
@@ -102,17 +102,19 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
                 setOpenCreateInvoice(false);
                 setShowError({
-                    display: true,
+                    displayed: true,
                     message: 'Unable to create new invoice'
                 })
 
             }
 
         } catch (err) {
+            
+            console.log(err);
 
             setOpenCreateInvoice(false);
             setShowError({
-                display: true,
+                displayed: true,
                 message: 'Unable to create new invoice'
             })
 
@@ -171,7 +173,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
         try {
 
-            const resp = await fetch(process.env.BACKEND_API + '/invoices', {
+            const resp = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/invoices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

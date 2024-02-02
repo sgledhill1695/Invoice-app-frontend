@@ -78,7 +78,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
         try {
 
-            const resp = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/invoices', {
+            const resp = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/invoices`, {
 
                 method: 'POST',
                 headers: {
@@ -173,7 +173,7 @@ export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, 
 
         try {
 
-            const resp = await fetch(process.env.NEXT_PUBLIC_BACKEND_API + '/invoices', {
+            const resp = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API}/invoices`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

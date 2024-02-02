@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic' // defaults to force-static
 
 export async function GET(request) {
 
-    try {
 
         const searchParams = request.nextUrl.searchParams;
         const page = searchParams.get('page');
@@ -10,23 +9,32 @@ export async function GET(request) {
         const filters = searchParams.get('filters');
 
 
+    const res = await fetch(process.env.BACKEND_API + '/invoices/' + page + '/' + pageSize + '/' + filters, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
 
 
-        const res = await fetch(process.env.BACKEND_API + '/invoices/' + page + '/' + pageSize + '/' + filters, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
+    if (res.status === 200) {
 
         const data = await res.json();
 
-        return Response.json({ data });
+        return Response.json(
+            {
+                status: 200,
+                data: data
+            });
 
+    } else {
 
+        return Response.json(
+            {
+                status: 500,
+                error: 'Unable to retrieve invoices'
+            }
+        );
 
-    } catch(err) {
-        console.log(err);
     }
-
 
 }

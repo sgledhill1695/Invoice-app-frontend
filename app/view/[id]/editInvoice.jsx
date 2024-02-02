@@ -9,8 +9,6 @@ import { useInView } from 'react-intersection-observer';
 
 export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setInvoices, invoice, params, setReRender, setShowSuccess, setShowError }) {
 
-    console.log(invoice)
-
     //Context
     const { darkModeActive } = useContext(DarkModeContext);
 
@@ -133,7 +131,7 @@ export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setIn
                     className="fixed inset-0 bg-[#0000007a] h-[100%] w-[100%]"
                 />
 
-                <div className="fixed inset-0 overflow-hidden">
+                <div className="fixed inset-0 overflow-hidden z-[200]">
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="pointer-events-none fixed inset-y-0 left left-0 flex max-w-full lg:pl-10 pt-[80px] lg:pt-[0px]">
                             <Transition.Child

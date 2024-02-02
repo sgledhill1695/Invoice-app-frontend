@@ -19,7 +19,7 @@ export default function DeleteModal({modalOpen, setModalOpen, invoice, darkModeA
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div className="flex min-h-full justify-center p-4 text-center items-center sm:p-0">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -37,7 +37,7 @@ export default function DeleteModal({modalOpen, setModalOpen, invoice, darkModeA
                                         </Dialog.Title>
                                         <div className="mt-2">
                                             <p className={`${darkModeActive ? 'text-[#DFE3FA]' : 'text-brand-six'} leading-[22px] mt-[12px]`}>
-                                                Are you sure you want to delete invoice #XM9141? This action cannot be undone.
+                                                Are you sure you want to delete this invoice? This action cannot be undone.
                                             </p>
                                         </div>
                                     </div>

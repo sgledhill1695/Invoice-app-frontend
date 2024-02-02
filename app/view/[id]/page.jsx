@@ -194,6 +194,8 @@ export default function Page({params}){
                             invoice={invoice}
                             handleDeleteModal={handleDeleteModal}
                             onDelete={onDelete}
+                            onMarkAsPaid={onMarkAsPaid}
+                            setOpenEditInvoice={setOpenEditInvoice}
                         />
         
                         <DeleteModal

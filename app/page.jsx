@@ -236,7 +236,7 @@ export default function Page() {
 
 			try{
 
-				const filterResponse = await fetch(`/api/invoices/index?page=1&pageSize=8&filters=${filters.join(',')}`);
+				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
 				const filteredInvoices = await filterResponse.json();
 
 				console.log('filtered Invoices below');
@@ -273,7 +273,7 @@ export default function Page() {
 			} catch(err){
 
 				setPaginateLoading(false);
-				setPaginationError(true);
+				setFetchError(true);
 
 			}
 		}

@@ -4,7 +4,7 @@ export async function POST(request){
 
         const req = await request.json();
 
-        const res = await fetch('http://localhost:5000/invoices/' + req.id , {
+        const res = await fetch(process.env.BACKEND_API + '/invoices/' + req.id , {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json',

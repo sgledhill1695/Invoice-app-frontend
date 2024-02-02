@@ -50,6 +50,8 @@ export default function Page() {
 				const res = await fetch(`/api/invoices/index?page=1&pageSize=8`);
 				const retrievedInvoices = await res.json();
 
+				console.log(retrievedInvoices);
+
 				//Calc payment due date and add formatted creation date and due date to object.
 				retrievedInvoices.data.invoices.forEach(invoice => {
 
@@ -80,6 +82,7 @@ export default function Page() {
 				setLoading(false);
 
 			} catch(err) {
+				console.log(err);
 				setFetchError(true);
 			}
 		};

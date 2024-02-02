@@ -9,6 +9,8 @@ import { useInView } from 'react-intersection-observer';
 
 export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setInvoices, invoice, params, setReRender, setShowSuccess, setShowError }) {
 
+    console.log(invoice)
+
     //Context
     const { darkModeActive } = useContext(DarkModeContext);
 

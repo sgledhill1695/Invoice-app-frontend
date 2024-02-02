@@ -47,7 +47,7 @@ export default function Page() {
 
 			try {
 
-				const res = await fetch(`/api/invoices/index?page=1&pageSize=8`);
+				const res = await fetch(`/api/invoices/all?page=1&pageSize=8`);
 
 				if(res.status === 200){
 

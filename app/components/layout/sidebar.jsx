@@ -32,7 +32,7 @@ export default function Sidebar(){
     return(
         <aside className={`${darkModeActive ? 'bg-[#141625]' : 'bg-[#F8F8FB]'}`}>
 
-            <div className={`${darkModeActive ? 'bg-dark-sidebar' : 'bg-light-sidebar'} relative lg:fixed z-20 flex lg:flex-col w-[100vw] lg:min-h-[280px] lg:w-[103px] h-[80px] lg:h-[100%]  lg:rounded-br-[20px] lg:rounded-tr-[20px] justify-between`}>
+            <div className={`${darkModeActive ? 'bg-dark-sidebar' : 'bg-light-sidebar'} relative lg:fixed z-[21] flex lg:flex-col w-[100vw] lg:min-h-[280px] lg:w-[103px] h-[80px] lg:h-[100%]  lg:rounded-br-[20px] lg:rounded-tr-[20px] justify-between`}>
 
                 <div className="bg-brand-dark-purple flex justify-center items-center min-w-[80px] lg:min-w-0 lg:h-[103px] rounded-br-[20px] rounded-tr-[20px] relative">
 

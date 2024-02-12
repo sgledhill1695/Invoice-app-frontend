@@ -77,7 +77,7 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
                             <div className="col-span-1">
                                 <div className="flex flex-col gap-[7px]">
                                     <h3 className={invoiceHeader}>Sent To</h3>
-                                <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToName || <Skeleton baseColor={darkModeActive && "#777A92"} />}</p>
+                                <p className={`${invoiceData} heading-s-var mt-[6px]`}>{invoice?.billToEmail || <Skeleton baseColor={darkModeActive && "#777A92"} />}</p>
                                 </div>
                             </div>
 

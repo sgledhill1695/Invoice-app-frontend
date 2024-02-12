@@ -31,7 +31,7 @@ export default function Page() {
 	const {setShowError} = useContext(ErrorNotificationContext);
 	const [reRender, setReRender] = useState(false);
 	const [loading, setLoading] = useState(true);
-	const [totalPages, setTotalPages] = useState(0);
+	const [totalPages, setTotalPages] = useState(1);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [paginateLoading, setPaginateLoading] = useState(false);
 	const [paginationError, setPaginationError] = useState(false);
@@ -52,8 +52,6 @@ export default function Page() {
 				if(res.status === 200){
 
 					const retrievedInvoices = await res.json();
-
-					console.log(retrievedInvoices);
 
 					//Calc payment due date and add formatted creation date and due date to object.
 					retrievedInvoices.data.invoices.forEach(invoice => {
@@ -86,14 +84,12 @@ export default function Page() {
 
 				} else {
 
-					console.log(res);
 					setFetchError(true);
 				}
 
 				
 
 			} catch(err) {
-				console.log(err);
 				setFetchError(true);
 			}
 		};
@@ -103,18 +99,20 @@ export default function Page() {
 
 	}, [reRender]);
 
-
     //Open create invoice sidebar
 	const handleOpenCreateInvoice = () => {
 		setOpenCreateInvoice(true);
 	};
 
-	//Inifinite Scroll Pagination
+
 	//Check for the user reaching the bottom of the viewport
 	const handleScroll = () => { 
 
+
 		if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || paginateLoading) {
+
 			return;
+
 		} else {
 			setPaginateLoading(true);
 			setCurrentPage(currentPage => currentPage + 1);
@@ -122,8 +120,15 @@ export default function Page() {
 	};
 
 	useEffect(() => {
-		window.addEventListener('scroll', handleScroll);
+
+		const isNearBottom = window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 1;
+
+		if (!isNearBottom || paginateLoading) {
+			window.addEventListener('scroll', handleScroll);
+		}
+
 		return () => window.removeEventListener('scroll', handleScroll);
+
 	}, [paginateLoading]);
 
 	//Fetch more invoices when current page is incremmented by 1
@@ -135,7 +140,7 @@ export default function Page() {
 
 				if(filters.length > 0){
 
-					const fetchResponse = await fetch(`/api/invoices/index?page=${currentPage}&pageSize=8&filters=${filters.join(',')}`);
+					const fetchResponse = await fetch(`/api/invoices/all?page=${currentPage}&pageSize=8&filters=${filters.join(',')}`);
 
 					const moreInvoices = await fetchResponse.json();
 
@@ -170,9 +175,7 @@ export default function Page() {
 
 				} else {
 
-
-
-					const fetchResponse = await fetch(`/api/invoices/index?page=${currentPage}&pageSize=8`);
+					const fetchResponse = await fetch(`/api/invoices/all?page=${currentPage}&pageSize=8`);
 
 					const moreInvoices = await fetchResponse.json();
 
@@ -214,9 +217,9 @@ export default function Page() {
 			}
 		}
 
-		if(currentPage > 1){
+		if(currentPage >= 1){
 
-			if (currentPage >= totalPages) {
+			if (currentPage > totalPages) {
 				setPaginateLoading(false);
 				setAllInvoicesRetrieved(true);
 			} else {
@@ -239,8 +242,6 @@ export default function Page() {
 				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
 				const filteredInvoices = await filterResponse.json();
 
-				console.log('filtered Invoices below');
-				console.log(filteredInvoices);
 
 				filteredInvoices.data.invoices.forEach(invoice => {
 
@@ -291,7 +292,11 @@ export default function Page() {
   return (
 	<>
 
+
     	<MainWrapper>	
+
+			{currentPage}
+
 
 			{fetchError ? (
 
@@ -303,6 +308,7 @@ export default function Page() {
 
 			) : (
 				<>
+
 					<MainHeader
 						handleOpenCreateInvoice={handleOpenCreateInvoice}
 						invoices={invoices}

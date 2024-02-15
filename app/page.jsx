@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useState, useEffect} from "react";
+import { useContext, useState, useEffect, useRef, useCallback} from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { SuccessNotificationContext } from "./context/notificationContext";
 import { ErrorNotificationContext } from "./context/notificationContext";
@@ -40,10 +40,18 @@ export default function Page() {
 	const [fetchError, setFetchError] = useState(false);
 
 
+	//Refs
+	const observer = useRef();
+
 	//Fetch all the invoices from db
 	useEffect(() => {
 
+		setCurrentPage(1);
+		setAllInvoicesRetrieved(false);
+
+		//Initial function to fetch invoices from backend
 		const fetchInvoices = async () => {
+
 
 			try {
 
@@ -52,6 +60,8 @@ export default function Page() {
 				if(res.status === 200){
 
 					const retrievedInvoices = await res.json();
+
+					console.log(retrievedInvoices);
 
 					//Calc payment due date and add formatted creation date and due date to object.
 					retrievedInvoices.data.invoices.forEach(invoice => {
@@ -77,9 +87,11 @@ export default function Page() {
 
 					});
 
+					
+
 					setInvoices(retrievedInvoices.data.invoices);
 					setRetrievedInvoices(retrievedInvoices.data.invoices);
-					setTotalPages(retrievedInvoices.data.totalPages)
+					setTotalPages(retrievedInvoices.data.totalPages);
 					setLoading(false);
 
 				} else {
@@ -94,51 +106,111 @@ export default function Page() {
 			}
 		};
 
-		fetchInvoices();
+		//function to fetch invoices if a filter is active
+		const fetchFilteredInvoices = async () => {
+
+			try {
+
+				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
+				const filteredInvoices = await filterResponse.json();
+
+				console.log(filteredInvoices)
+
+
+				filteredInvoices.data.invoices.forEach(invoice => {
+
+					const invoiceCreationDate = new Date(invoice.dateCreated);
+					const paymentDueDate = new Date(invoiceCreationDate);
+					paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
+
+					const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					});
+
+					const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
+						day: 'numeric',
+						month: 'short',
+						year: 'numeric',
+					});
+
+					invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
+					invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
+
+				});
+
+				setInvoices(filteredInvoices.data.invoices);
+				setRetrievedInvoices(filteredInvoices.data.invoices);
+				setTotalPages(filteredInvoices.data.totalPages);
+				setLoading(false);
+
+			} catch (err) {
+
+				setPaginateLoading(false);
+				setFetchError(true);
+
+			}
+		};
+
+		if(filters.length > 0){
+
+			fetchFilteredInvoices();
+
+		} else {
+
+			fetchInvoices();
+
+		}
+
 		setReRender(false);
 
-	}, [reRender]);
+	}, [reRender, filters]);
 
     //Open create invoice sidebar
 	const handleOpenCreateInvoice = () => {
 		setOpenCreateInvoice(true);
 	};
 
+	const lastInvoiceRef = useCallback(node => {
 
-	//Check for the user reaching the bottom of the viewport
-	const handleScroll = () => { 
+		//If currently fetching data return
+		if (paginateLoading) return
 
+		if (observer.current) observer.current.disconnect();
 
-		if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight || paginateLoading) {
+		observer.current = new IntersectionObserver(entries => {
+			if (entries[0].isIntersecting) {
 
-			return;
+				console.log(totalPages)
 
-		} else {
-			setPaginateLoading(true);
-			setCurrentPage(currentPage => currentPage + 1);
-		};
-	};
+				if(currentPage < totalPages){
 
-	useEffect(() => {
+					setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
+					setPaginateLoading(true);
+					fetchMoreInvoices();
 
-		const isNearBottom = window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 1;
+				} else {
 
-		if (!isNearBottom || paginateLoading) {
-			window.addEventListener('scroll', handleScroll);
-		}
+					setAllInvoicesRetrieved(true);
 
-		return () => window.removeEventListener('scroll', handleScroll);
+				}
+				
+			}
 
-	}, [paginateLoading]);
+		})
 
-	//Fetch more invoices when current page is incremmented by 1
+		if (node) observer.current.observe(node);
+
+	}, [paginateLoading, totalPages]);
+
 	useEffect(() => {
 
 		const fetchMoreInvoices = async () => {
 
 			try {
 
-				if(filters.length > 0){
+				if (filters.length > 0) {
 
 					const fetchResponse = await fetch(`/api/invoices/all?page=${currentPage}&pageSize=8&filters=${filters.join(',')}`);
 
@@ -179,6 +251,8 @@ export default function Page() {
 
 					const moreInvoices = await fetchResponse.json();
 
+					console.log(moreInvoices)
+
 					moreInvoices.data.invoices.forEach(invoice => {
 
 						const invoiceCreationDate = new Date(invoice.dateCreated);
@@ -217,179 +291,131 @@ export default function Page() {
 			}
 		}
 
-		if(currentPage >= 1){
-
-			if (currentPage > totalPages) {
-				setPaginateLoading(false);
-				setAllInvoicesRetrieved(true);
-			} else {
-				fetchMoreInvoices();
-			};
-		};
-
-
-	}, [currentPage]);
-
-	//Fetch filtered invoices
-	useEffect(() => {
-
-		setCurrentPage(1);
-
-		const fetchFilteredInvoices = async () => {
-
-			try{
-
-				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
-				const filteredInvoices = await filterResponse.json();
-
-
-				filteredInvoices.data.invoices.forEach(invoice => {
-
-					const invoiceCreationDate = new Date(invoice.dateCreated);
-					const paymentDueDate = new Date(invoiceCreationDate);
-					paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
-
-					const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					});
-
-					const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					});
-
-					invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-					invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
-				});
-
-				setInvoices(filteredInvoices.data.invoices);
-				setRetrievedInvoices(filteredInvoices.data.invoices);
-				setTotalPages(filteredInvoices.data.totalPages);
-				setLoading(false);
-
-			} catch(err){
-
-				setPaginateLoading(false);
-				setFetchError(true);
-
-			}
+		if(currentPage > 1){
+			fetchMoreInvoices();
 		}
 
 
-		if(filters.length > 0){
-			fetchFilteredInvoices();
-		} else {
-			setReRender(true);
-		};
+	}, [currentPage])
 
-	},[filters]);
+  	return (
+		<>
 
 
-  return (
-	<>
+    		<MainWrapper>	
 
+				current page - {currentPage} / total pages - {totalPages}
 
-    	<MainWrapper>	
+				{fetchError ? (
 
-			{currentPage}
-
-
-			{fetchError ? (
-
-				<FetchError
-					setFetchError={setFetchError}
-					darkModeActive={darkModeActive}
-					setReRender={setReRender}
-				/>
-
-			) : (
-				<>
-
-					<MainHeader
-						handleOpenCreateInvoice={handleOpenCreateInvoice}
-						invoices={invoices}
-						setInvoices={setInvoices}
-						retrievedInvoices={retrievedInvoices}
-						filters={filters}
-						setFilters={setFilters}
+					<FetchError
+						setFetchError={setFetchError}
+						darkModeActive={darkModeActive}
+						setReRender={setReRender}
 					/>
 
-					{/* If loading display skeleton, when loaded display invoices if any in DB. If none in DB display SVG */}
-					{loading ? (
+				) : (
+					<>
 
-						<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
-							<InvoicesSkeleton loadingInvoices={7} />
-						</section>
+						<MainHeader
+							handleOpenCreateInvoice={handleOpenCreateInvoice}
+							invoices={invoices}
+							setInvoices={setInvoices}
+							retrievedInvoices={retrievedInvoices}
+							filters={filters}
+							setFilters={setFilters}
+						/>
 
-						) : (
-							<>
-								{invoices.length > 0 ? (
+						{/* If loading display skeleton, when loaded display invoices if any in DB. If none in DB display SVG */}
+						{loading ? (
 
-									<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
+							<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
+								<InvoicesSkeleton loadingInvoices={7} />
+							</section>
 
-										{invoices.map((invoice, index) => (
-											<Link key={index} href={`/view/${invoice._id}`}>
-												<Invoices
-													invoice={invoice}
-												/>
-											</Link>
-										))}
+							) : (
+								<>
+									{invoices.length > 0 ? (
 
-										<div className="flex justify-center">
-											<PaginationLoader paginateLoading={paginateLoading} />
+										<section className="mt-[36px] sm:mt-[64px] mb-[60px] flex flex-col gap-[16px]">
 
-											{paginationError && (
+											{invoices.map((invoice, index) => {
 
-												<PaginationError darkModeActive={darkModeActive} />
-											)}
+												if(invoices.length === index + 1){
 
+													return(
 
-												{allInvoicesRetrieved && (
-												    <p className={`${darkModeActive && 'text-[white]'}`}>
-													  	All invoices have been retrieved!
-												  	</p>
-											  	)}
-										</div>
+														<Link key={index} ref={lastInvoiceRef} href={`/view/${invoice._id}`}>
+															<Invoices 
+																invoice={invoice}
+															/>
+														</Link>
+													)
+													
+												} else {
 
-									</section>
+													return (
+														<Link key={index} href={`/view/${invoice._id}`}>
+															<Invoices
+																invoice={invoice}
+															/>
+														</Link>
+													)
+												}
+											})}
 
-								) : (
+											<div className="flex justify-center">
+												<PaginationLoader paginateLoading={paginateLoading} />
 
-									<section className="flex flex-col items-center mt-[100px] sm:mt-[130px] lg:mt-[162px] gap-[66px]">
-									  	<NoInvoicesSVG />
-									  	<div className="flex flex-col items-center gap-[13px]">
-										  	<h3 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>There is nothing here</h3>
-										  	<p className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'}  max-w-[193px] text-center`}>
-											  	Create an invoice by clicking the New Invoice button and get started.
-										  	</p>
-									 	</div>
-									</section>
-								)}
+												{paginationError && (
 
-							</>
-						)}
-				</>
-			)}
+													<PaginationError darkModeActive={darkModeActive} />
+												)}
 
 
-			<SuccessNotification/>
-			<ErrorNotification/>
-			
-    	</MainWrapper>
+													{allInvoicesRetrieved && (
+															<p className={`${darkModeActive && 'text-[white]'} flex align-middle gap-2`}>
+																<svg xmlns="http://www.w3.org/2000/svg" className="w-[15px] fill-[#33D69F]" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" /></svg>
+																<span>All invoices have been retrieved!</span>
+													  	</p>
+												  	)}
+											</div>
 
- 		<CreateInvoice
-			openCreateInvoice={openCreateInvoice}
-			setOpenCreateInvoice={setOpenCreateInvoice}
-			setInvoices={setInvoices}
-			setShowSuccess={setShowSuccess}
-			setShowError={setShowError}
-			setReRender={setReRender}
-		/>
+										</section>
 
-	</>
+									) : (
+
+										<section className="flex flex-col items-center mt-[100px] sm:mt-[130px] lg:mt-[162px] gap-[66px]">
+										  	<NoInvoicesSVG />
+										  	<div className="flex flex-col items-center gap-[13px]">
+											  	<h3 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>There is nothing here</h3>
+											  	<p className={`${darkModeActive ? 'text-[white]' : 'text-brand-six'}  max-w-[193px] text-center`}>
+												  	Create an invoice by clicking the New Invoice button and get started.
+											  	</p>
+										 	</div>
+										</section>
+									)}
+
+								</>
+							)}
+					</>
+				)}
+
+
+				<SuccessNotification/>
+				<ErrorNotification/>
+									
+    		</MainWrapper>
+
+ 			<CreateInvoice
+				openCreateInvoice={openCreateInvoice}
+				setOpenCreateInvoice={setOpenCreateInvoice}
+				setInvoices={setInvoices}
+				setShowSuccess={setShowSuccess}
+				setShowError={setShowError}
+				setReRender={setReRender}
+			/>
+
+		</>
   )
 }

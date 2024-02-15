@@ -61,8 +61,6 @@ export default function Page() {
 
 					const retrievedInvoices = await res.json();
 
-					console.log(retrievedInvoices);
-
 					//Calc payment due date and add formatted creation date and due date to object.
 					retrievedInvoices.data.invoices.forEach(invoice => {
 
@@ -113,9 +111,6 @@ export default function Page() {
 
 				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
 				const filteredInvoices = await filterResponse.json();
-
-				console.log(filteredInvoices)
-
 
 				filteredInvoices.data.invoices.forEach(invoice => {
 
@@ -181,8 +176,6 @@ export default function Page() {
 
 		observer.current = new IntersectionObserver(entries => {
 			if (entries[0].isIntersecting) {
-
-				console.log(totalPages)
 
 				if(currentPage < totalPages){
 
@@ -251,8 +244,6 @@ export default function Page() {
 
 					const moreInvoices = await fetchResponse.json();
 
-					console.log(moreInvoices)
-
 					moreInvoices.data.invoices.forEach(invoice => {
 
 						const invoiceCreationDate = new Date(invoice.dateCreated);
@@ -303,8 +294,6 @@ export default function Page() {
 
 
     		<MainWrapper>	
-
-				current page - {currentPage} / total pages - {totalPages}
 
 				{fetchError ? (
 

@@ -181,7 +181,6 @@ export default function Page() {
 
 					setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
 					setPaginateLoading(true);
-					fetchMoreInvoices();
 
 				} else {
 

@@ -147,7 +147,7 @@ export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setIn
                                     <div className={`${darkModeActive ? 'bg-brand-twelve' : 'bg-[white]'} flex h-full flex-col overflow-y-scroll lg:ps-[100px] pe-[20px] sm:rounded-tr-[20px] sm:rounded-br-[20px] pt-[30px] lg:pt-[59px] shadow-xl`}>
                                         <div className="relative mt-6 flex-1 px-4 sm:px-6">
 
-                                            <div className="overflow-y-scroll h-[100%] lg:pe-[16px]">
+                                            <div className="h-[100%] lg:pe-[16px]">
 
                                                 <h5 className={`${darkModeActive ? 'text-[white]' : 'text-brand-eight'} heading-m`}>Edit #{invoice?._id?.slice(0, 6)}</h5>
 

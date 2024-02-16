@@ -8,7 +8,7 @@ import currency from 'currency.js';
 
 
 
-export default function CreateInvoice({openCreateInvoice, setOpenCreateInvoice, setInvoices, setShowSuccess, setShowError, setReRender}) {
+export default function CreateInvoice({ openCreateInvoice, setOpenCreateInvoice, setInvoices, setShowSuccess, setShowError, setReRender}) {
 
     //Format currency to pounds
     const POUND = value => currency(value, { symbol: '', decimal: '.', separator: ',', precision: 0 });

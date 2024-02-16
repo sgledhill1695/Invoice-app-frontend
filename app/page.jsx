@@ -179,10 +179,11 @@ export default function Page() {
 
 				if(currentPage < totalPages){
 
+					setAllInvoicesRetrieved(false);
 					setCurrentPage(prevCurrentPage => prevCurrentPage + 1);
 					setPaginateLoading(true);
 
-				} else {
+				} else if(currentPage === totalPages) {
 
 					setAllInvoicesRetrieved(true);
 
@@ -194,7 +195,7 @@ export default function Page() {
 
 		if (node) observer.current.observe(node);
 
-	}, [paginateLoading, totalPages]);
+	}, [paginateLoading, totalPages, allInvoicesRetrieved]);
 
 	useEffect(() => {
 
@@ -361,12 +362,17 @@ export default function Page() {
 												)}
 
 
-													{allInvoicesRetrieved && (
-															<p className={`${darkModeActive && 'text-[white]'} flex align-middle gap-2`}>
-																<svg xmlns="http://www.w3.org/2000/svg" className="w-[15px] fill-[#33D69F]" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" /></svg>
-																<span>All invoices have been retrieved!</span>
+													{allInvoicesRetrieved ? (
+														<p className={`${darkModeActive && 'text-[white]'} flex align-middle gap-2`}>
+															<svg xmlns="http://www.w3.org/2000/svg" className="w-[15px] fill-[#33D69F]" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" /></svg>
+															<span>All invoices have been retrieved!</span>
 													  	</p>
-												  	)}
+												  	): (
+														<>
+														
+														</>
+													)
+													}
 											</div>
 
 										</section>

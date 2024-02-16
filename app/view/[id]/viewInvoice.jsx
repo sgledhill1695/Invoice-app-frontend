@@ -196,7 +196,7 @@ export default function ViewInvoice({invoice, darkModeActive, handleDeleteModal,
             </div>
 
             {/* Floating submit buttons */}
-            <div className={`${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} sm:hidden fixed bottom-0 left-0 right-0 h-[110px] w-[100%] py-[30px] floating-submit flex gap-[10px] justify-between ps-[24px] sm:ps-[55px] lg:ps-[155px] pe-[24px] sm:pe-[55px] z-[100]`}>
+            <div className={`${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} sm:hidden fixed bottom-0 left-0 right-0 h-[110px] w-[100%] py-[30px] floating-submit flex gap-[10px] justify-between ps-[24px] sm:ps-[55px] lg:ps-[155px] pe-[24px] sm:pe-[55px]`}>
 
                 <div className="flex justify-between items-center gap-[8px] w-[100%]">
 

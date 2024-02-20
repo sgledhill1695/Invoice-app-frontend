@@ -530,7 +530,7 @@ export default function EditInvoice({ openEditInvoice, setOpenEditInvoice, setIn
                                                     </div>
 
                                                     {/* Floating submit buttons */}
-                                                    <div className={`${inView ? 'hidden' : ''} ${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} ${openEditInvoice ? 'open-side-panel' : 'close-side-panel'}  fixed bottom-0 left-0 right-0 h-[110px] w-[100%] max-w-[790px] py-[30px] floating-submit flex gap-[10px] justify-between sm:rounded-br-[20px] ps-[24px] sm:ps-[55px] lg:ps-[130px] pe-[24px] sm:pe-[55px] top-shadow z-40`}>
+                                                    <div className={`${inView ? 'hidden' : ''} ${darkModeActive ? 'bg-brand-four' : 'bg-[#FFF]'} ${openEditInvoice ? 'open-side-panel' : 'close-side-panel'}  fixed bottom-0 left-0 right-0 h-[110px] w-[100%] max-w-[790px] py-[30px] floating-submit flex gap-[10px] justify-between sm:rounded-br-[20px] ps-[24px] sm:ps-[55px] lg:ps-[130px] pe-[24px] sm:pe-[55px] top-shadow`}>
 
                                                         <button onClick={handleDiscard} type="button" className="w-[80px] sm:w-[96px] bg-[#F9FAFE] rounded-[24px] text-brand-seven ls-bold text-[0.93rem] py-[16.5px] tracking-[-0.25px] ">
                                                             Discard

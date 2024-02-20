@@ -25,8 +25,6 @@ export default function RootLayout({ children }) {
 
                 {children}
 
-                <Analytics />
-                
               </div>
 
             </NotificationContextProvider>

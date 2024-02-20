@@ -35,7 +35,7 @@ export default function InvoicesSkeleton({loadingInvoices}){
                         <Skeleton baseColor={darkModeActive && "#777A92"} />
                     </p>
 
-                    <div className={`${darkModeActive ? 'bg-[#777A92]' : 'bg-[#F9FAFE]'} py-[10px] w-[104px] h-[44px] sm:h-45px] flex items-center justify-center  rounded-[6px] gap-[8px] order-5 sm:order-5`}>
+                    <div className={`${darkModeActive ? 'bg-[#777A92]' : 'bg-[#F9FAFE]'} py-[10px] w-[104px] h-[44px] sm:h-45px] flex items-center justify-center rounded-[6px] gap-[8px] order-5 sm:order-5`}>
                         <Skeleton />
                     </div>
 

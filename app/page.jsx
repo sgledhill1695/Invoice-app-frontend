@@ -4,6 +4,8 @@ import { useContext, useState, useEffect, useRef, useCallback} from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { SuccessNotificationContext } from "./context/notificationContext";
 import { ErrorNotificationContext } from "./context/notificationContext";
+import useFetchInvoices from './hooks/useFetchInvoices';
+import { formatDate, calcPaymentDueDate } from "./components/functions/functions";
 
 import MainWrapper from "./components/mainWrapper";
 import MainHeader from "./components/mainHeader";
@@ -26,7 +28,7 @@ export default function Page() {
 	//States
 	const [openCreateInvoice, setOpenCreateInvoice] = useState(false);
 	const [invoices, setInvoices] = useState([]);
-	const [retrievedInvoices, setRetrievedInvoices] = useState([]); //Keep track of invoices fetched from api
+	const [retrievedInvoices, setRetrievedInvoices] = useState([]); //Keep track of invoices fetched from api through renders
 	const {setShowSuccess} = useContext(SuccessNotificationContext);
 	const {setShowError} = useContext(ErrorNotificationContext);
 	const [reRender, setReRender] = useState(false);
@@ -39,128 +41,11 @@ export default function Page() {
 	const [filters, setFilters] = useState([]);
 	const [fetchError, setFetchError] = useState(false);
 
+	//Fetch all invoices
+	useFetchInvoices(filters, reRender, setReRender, invoices, setInvoices, setLoading, setCurrentPage, setAllInvoicesRetrieved, setRetrievedInvoices, setTotalPages, setFetchError);
 
 	//Refs
 	const observer = useRef();
-
-	//Fetch all the invoices from db
-	useEffect(() => {
-
-		setCurrentPage(1);
-		setAllInvoicesRetrieved(false);
-
-		//Initial function to fetch invoices from backend
-		const fetchInvoices = async () => {
-
-
-			try {
-
-				const res = await fetch(`/api/invoices/all?page=1&pageSize=8`);
-
-				if(res.status === 200){
-
-					const retrievedInvoices = await res.json();
-
-					//Calc payment due date and add formatted creation date and due date to object.
-					retrievedInvoices.data.invoices.forEach(invoice => {
-
-						const invoiceCreationDate = new Date(invoice.dateCreated);
-						const paymentDueDate = new Date(invoiceCreationDate);
-						paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
-
-						const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-						invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
-					});
-
-					
-
-					setInvoices(retrievedInvoices.data.invoices);
-					setRetrievedInvoices(retrievedInvoices.data.invoices);
-					setTotalPages(retrievedInvoices.data.totalPages);
-					setLoading(false);
-
-				} else {
-
-					setFetchError(true);
-				}
-
-				
-
-			} catch(err) {
-				setFetchError(true);
-			}
-		};
-
-		//function to fetch invoices if a filter is active
-		const fetchFilteredInvoices = async () => {
-
-			try {
-
-				const filterResponse = await fetch(`/api/invoices/all?page=1&pageSize=8&filters=${filters.join(',')}`);
-				const filteredInvoices = await filterResponse.json();
-
-				filteredInvoices.data.invoices.forEach(invoice => {
-
-					const invoiceCreationDate = new Date(invoice.dateCreated);
-					const paymentDueDate = new Date(invoiceCreationDate);
-					paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
-
-					const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					});
-
-					const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-						day: 'numeric',
-						month: 'short',
-						year: 'numeric',
-					});
-
-					invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-					invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
-				});
-
-				setInvoices(filteredInvoices.data.invoices);
-				setRetrievedInvoices(filteredInvoices.data.invoices);
-				setTotalPages(filteredInvoices.data.totalPages);
-				setLoading(false);
-
-			} catch (err) {
-
-				setPaginateLoading(false);
-				setFetchError(true);
-
-			}
-		};
-
-		if(filters.length > 0){
-
-			fetchFilteredInvoices();
-
-		} else {
-
-			fetchInvoices();
-
-		}
-
-		setReRender(false);
-
-	}, [reRender, filters]);
 
     //Open create invoice sidebar
 	const handleOpenCreateInvoice = () => {
@@ -197,6 +82,7 @@ export default function Page() {
 
 	}, [paginateLoading, totalPages, allInvoicesRetrieved]);
 
+	//When user reaches last invoice, fetch 8 more invoices
 	useEffect(() => {
 
 		const fetchMoreInvoices = async () => {
@@ -210,26 +96,9 @@ export default function Page() {
 					const moreInvoices = await fetchResponse.json();
 
 					moreInvoices.data.invoices.forEach(invoice => {
-
-						const invoiceCreationDate = new Date(invoice.dateCreated);
-						const paymentDueDate = new Date(invoiceCreationDate);
-						paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
-
-						const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-						invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
+						const paymentDueDate = calcPaymentDueDate(invoice.dateCreated, invoice.paymentTerms)
+						invoice.invoiceCreationDateFormatted = formatDate(invoice.dateCreated);
+						invoice.invoicePaymentDueDateFormatted = formatDate(paymentDueDate);
 					});
 
 					const updatedInvoices = [...invoices, ...moreInvoices.data.invoices];
@@ -245,26 +114,9 @@ export default function Page() {
 					const moreInvoices = await fetchResponse.json();
 
 					moreInvoices.data.invoices.forEach(invoice => {
-
-						const invoiceCreationDate = new Date(invoice.dateCreated);
-						const paymentDueDate = new Date(invoiceCreationDate);
-						paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.paymentTerms);
-
-						const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-							day: 'numeric',
-							month: 'short',
-							year: 'numeric',
-						});
-
-						invoice.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-						invoice.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
+						const paymentDueDate = calcPaymentDueDate(invoice.dateCreated, invoice.paymentTerms)
+						invoice.invoiceCreationDateFormatted = formatDate(invoice.dateCreated);
+						invoice.invoicePaymentDueDateFormatted = formatDate(paymentDueDate);
 					});
 
 					const updatedInvoices = [...invoices, ...moreInvoices.data.invoices];
@@ -272,7 +124,6 @@ export default function Page() {
 					setInvoices(updatedInvoices);
 					setRetrievedInvoices(updatedInvoices);
 					setPaginateLoading(false);
-
 				}
 
 			}
@@ -286,13 +137,10 @@ export default function Page() {
 			fetchMoreInvoices();
 		}
 
-
 	}, [currentPage])
 
   	return (
 		<>
-
-
     		<MainWrapper>	
 
 				{fetchError ? (

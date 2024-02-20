@@ -14,6 +14,7 @@ import SuccessNotification from "@/app/components/lib/successNotification";
 import ErrorNotification from "@/app/components/lib/errorNotification";
 import EditInvoice from "./editInvoice";
 import FetchError from "@/app/components/lib/fetchError";
+import useViewInvoice from "@/app/hooks/useViewInvoice";
 
 
 export default function Page({params}){
@@ -33,57 +34,7 @@ export default function Page({params}){
     //Router
     const router = useRouter();
 
-    //Fetch requested invoice
-    useEffect(() => {
-
-        const fetchInvoice = async () => {
-            try{
-                const res = await fetch('/api/invoices/view/' + params.id);
-
-                if(res.status === 200){
-
-                    const invoice = await res.json();
-
-                    //Calc payment due date and add formatted creation date and due date to object.
-                    const invoiceCreationDate = new Date(invoice.data.dateCreated);
-                    const paymentDueDate = new Date(invoiceCreationDate);
-                    paymentDueDate.setDate(invoiceCreationDate.getDate() + invoice.data.paymentTerms);
-
-                    const formattedPaymentDueDate = paymentDueDate.toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                    });
-
-                    const formattedInvoiceCreationDate = invoiceCreationDate.toLocaleDateString('en-GB', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                    });
-
-                    invoice.data.invoiceCreationDateFormatted = formattedInvoiceCreationDate;
-                    invoice.data.invoicePaymentDueDateFormatted = formattedPaymentDueDate;
-
-
-                    setInvoice(invoice.data);
-
-                } else {
-
-                    setFetchError(true);
-
-                }
-            } catch(err){
-
-                setFetchError(true);
-
-            }
-        }
-        fetchInvoice();
-
-        setReRender(false);
-
-    },[reRender]);
-
+    useViewInvoice(invoice, setInvoice, reRender, setReRender, params, setFetchError);
     
     const handleDeleteModal = (invoice) => {
         setModalOpen(true)
@@ -160,8 +111,6 @@ export default function Page({params}){
 
     
     };
-
-
 
     return(
         <>
